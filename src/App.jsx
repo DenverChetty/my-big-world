@@ -103,29 +103,29 @@ function App() {
   }, [stamps, clickedCountries, user]);
 
   // Badge milestones
-useEffect(() => {
-  if (stamps.length === 10 && !celebrationTriggered.current) {
-    celebrationTriggered.current = true;
-    setCelebrationMessage("🏆 NOVICE EXPLORER! You've collected 10 stamps!");
-    setShowCelebration(true);
-    const utterance = new SpeechSynthesisUtterance("Woo hoo! Amazing! You're a Novice Explorer!");
-    utterance.rate = 0.9;
-    utterance.pitch = 1.4;
-    selectBestVoice(utterance);
-    window.speechSynthesis.speak(utterance);
-    setTimeout(() => setShowCelebration(false), 4000);
-  } else if (stamps.length === 20 && !celebrationTriggered.current) {
-    celebrationTriggered.current = true;
-    setCelebrationMessage("🏆 EXPLORER! You've collected 20 stamps!");
-    setShowCelebration(true);
-    const utterance = new SpeechSynthesisUtterance("Fantastic! You're an Explorer!");
-    utterance.rate = 0.9;
-    utterance.pitch = 1.4;
-    selectBestVoice(utterance);
-    window.speechSynthesis.speak(utterance);
-    setTimeout(() => setShowCelebration(false), 4000);
-  }
-}, [stamps]);
+  useEffect(() => {
+    if (stamps.length === 10 && !celebrationTriggered.current) {
+      celebrationTriggered.current = true;
+      setCelebrationMessage("🏆 NOVICE EXPLORER! You've collected 10 stamps!");
+      setShowCelebration(true);
+      const utterance = new SpeechSynthesisUtterance("Woo hoo! Amazing! You're a Novice Explorer!");
+      utterance.rate = 0.9;
+      utterance.pitch = 1.4;
+      selectBestVoice(utterance);
+      window.speechSynthesis.speak(utterance);
+      setTimeout(() => setShowCelebration(false), 4000);
+    } else if (stamps.length === 20 && !celebrationTriggered.current) {
+      celebrationTriggered.current = true;
+      setCelebrationMessage("🏆 EXPLORER! You've collected 20 stamps!");
+      setShowCelebration(true);
+      const utterance = new SpeechSynthesisUtterance("Fantastic! You're an Explorer!");
+      utterance.rate = 0.9;
+      utterance.pitch = 1.4;
+      selectBestVoice(utterance);
+      window.speechSynthesis.speak(utterance);
+      setTimeout(() => setShowCelebration(false), 4000);
+    }
+  }, [stamps]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -172,71 +172,47 @@ useEffect(() => {
 
   // Helper function to select best voice for pronunciation
   const selectBestVoice = (utterance) => {
-  const voices = window.speechSynthesis.getVoices();
-  
-  // Priority order for female, warm, kid-friendly voices
-  const preferredVoices = [
-    'Google UK English Female',
-    'Google US English Female', 
-    'Microsoft Susan',
-    'Microsoft Zira',
-    'Samantha',
-    'Karen',
-    'Google UK English Male',  // fallback
-    'Google US English Male'   // fallback
-  ];
-  
-  // Try to find a preferred female voice
-  for (const preferred of preferredVoices) {
-    const voice = voices.find(v => v.name.includes(preferred));
-    if (voice) {
-      utterance.voice = voice;
-      return;
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoices = [
+      'Google UK English Female',
+      'Google US English Female',
+      'Microsoft Susan',
+      'Microsoft Zira',
+      'Samantha',
+      'Karen'
+    ];
+    for (const preferred of preferredVoices) {
+      const voice = voices.find(v => v.name?.includes(preferred));
+      if (voice) {
+        utterance.voice = voice;
+        return;
+      }
     }
-  }
-  
-  // Fallback: find any female voice
-  const femaleVoice = voices.find(v => 
-    v.lang.startsWith('en') && 
-    (v.name.includes('Female') || v.name === 'Samantha' || v.name === 'Karen')
-  );
-  if (femaleVoice) {
-    utterance.voice = femaleVoice;
-  }
-};
+    const femaleVoice = voices.find(v =>
+      v.lang?.startsWith('en') &&
+      (v.name?.includes('Female') || v.name === 'Samantha' || v.name === 'Karen')
+    );
+    if (femaleVoice) utterance.voice = femaleVoice;
+  };
 
   const speakCountryInfo = (country) => {
-  // Stop any ongoing speech first
-  window.speechSynthesis.cancel();
-  
-  if (country.id === "unknown") {
-    const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
+    window.speechSynthesis.cancel();
+    if (country.id === "unknown") {
+      const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
+      utterance.rate = 0.85;
+      utterance.pitch = 1.2;
+      selectBestVoice(utterance);
+      window.speechSynthesis.speak(utterance);
+      return;
+    }
+    const helloToSay = country.helloPhonetic || country.hello;
+    const text = `Let's explore ${country.name}! The capital is ${country.capital}. ${country.name} is home to about ${country.population} people. People speak ${country.language} here. To say hello, you say ${helloToSay}. ${country.name} is famous for the ${country.animal}. And the food? ${country.food} is delicious! Here's something amazing: ${country.funFact}`;
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.85;
-    utterance.pitch = 1.2;  // Higher pitch for excitement
+    utterance.pitch = 1.3;
     selectBestVoice(utterance);
     window.speechSynthesis.speak(utterance);
-    return;
-  }
-  
-  // Use phonetic version for foreign words
-  const helloToSay = country.helloPhonetic || country.hello;
-  
-  // Cheerful, engaging narration
-  const text = `🎉 Let's explore ${country.name}! 🎉 
-  The capital is ${country.capital}! 
-  ${country.name} is home to about ${country.population} people. 
-  People speak ${country.language} here. To say hello, you say ${helloToSay}! 
-  ${country.name} is famous for the ${country.animal}! ${country.animalEmoji} 
-  And the food? ${country.food} is delicious! ${country.foodEmoji} 
-  Here's something amazing: ${country.funFact}`;
-  
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 0.85;
-  utterance.pitch = 1.3;  // Higher pitch = more exciting, kid-friendly
-  volume: 1,
-  selectBestVoice(utterance);
-  window.speechSynthesis.speak(utterance);
-};
+  };
 
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
@@ -244,7 +220,7 @@ useEffect(() => {
 
   const resetMapView = () => {
     setMapResetKey(prev => prev + 1);
-    setClickedCountries({}); // Reset all explored countries back to green
+    setClickedCountries({});
     setShowResetConfirm(false);
   };
 
@@ -272,43 +248,33 @@ useEffect(() => {
     );
   }
 
- if (showIntro) {
-  return (
-    <div className="intro-overlay">
-      <div className="intro-card">
-        <div className="intro-logo">🐼🐼</div>
-        <h1 className="intro-title">My Big World</h1>
-        <p className="intro-subtitle">with Penny and Peter Panda</p>
-        
-        <div className="intro-message">
-          <p>✨ Hi! We're Penny and Peter! ✨</p>
-          <p>We explore countries, collect stamps, and learn new languages!</p>
-          <p><strong>Want to come with us?</strong></p>
+  if (showIntro) {
+    return (
+      <div className="intro-overlay">
+        <div className="intro-card">
+          <div className="intro-logo">🐼🐼</div>
+          <h1 className="intro-title">My Big World</h1>
+          <p className="intro-subtitle">with Penny and Peter Panda</p>
+          <div className="intro-message">
+            <p>✨ Hi! We're Penny and Peter! ✨</p>
+            <p>We explore countries, collect stamps, and learn new languages!</p>
+            <p><strong>Want to come with us?</strong></p>
+          </div>
+          <div className="intro-buttons">
+            <button className="intro-btn google-btn" onClick={handleGoogleSignIn}>
+              <span className="google-icon">G</span>
+              Sign in with Google
+            </button>
+            <button className="intro-btn guest-btn" onClick={() => setShowIntro(false)}>
+              Continue as Guest
+            </button>
+          </div>
+          <p className="intro-note">🔐 Sign in to save your stamps on any device</p>
+          <p className="intro-note-small">Guest mode saves progress on this device only</p>
         </div>
-        
-        <div className="intro-buttons">
-          <button className="intro-btn google-btn" onClick={handleGoogleSignIn}>
-            <span className="google-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
-            </span>
-            Sign in with Google
-          </button>
-          <button className="intro-btn guest-btn" onClick={() => setShowIntro(false)}>
-            Continue as Guest
-          </button>
-        </div>
-        
-        <p className="intro-note">🔐 Sign in to save your stamps on any device</p>
-        <p className="intro-note-small">Guest mode saves progress on this device only</p>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="app">
@@ -434,24 +400,24 @@ useEffect(() => {
         </section>
       </div>
 
-     <footer className="footer">
-  <div className="footer-message">
-    <span className="footer-pandas">🐼🐼</span>
-    <span className="footer-text">My Big World — Ad-free. Forever.</span>
-  </div>
-  <div className="donate-row">
-    <span className="donate-text">💝 Donate to keep this app ad-free</span>
-    <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
-      Donate Now
-    </button>
-  </div>
-  <div className="footer-links">
-    <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
-    <span className="separator">|</span>
-    <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
-  </div>
-  <p className="footer-hint">👆 Hold here for 3 seconds (parent settings)</p>
-</footer>
+      <footer className="footer">
+        <div className="footer-message">
+          <span className="footer-pandas">🐼🐼</span>
+          <span className="footer-text">My Big World — Ad-free. Forever.</span>
+        </div>
+        <div className="donate-row">
+          <span className="donate-text">💝 Donate to keep this app ad-free</span>
+          <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
+            Donate Now
+          </button>
+        </div>
+        <div className="footer-links">
+          <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
+          <span className="separator">|</span>
+          <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
+        </div>
+        <p className="footer-hint">👆 Hold here for 3 seconds (parent settings)</p>
+      </footer>
 
       {showParentGate && (
         <div className="modal-overlay">
@@ -459,49 +425,25 @@ useEffect(() => {
             <button className="modal-close" onClick={() => setShowParentGate(false)}>✕</button>
             <div className="parent-header">🔒 PARENTS & TEACHERS</div>
             {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
-            
             <div className="donation-section">
               <form action="https://www.paypal.com/donate" method="post" target="_top">
                 <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
-                <input 
-                  type="image" 
-                  src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
-                  border="0" 
-                  name="submit" 
-                  title="PayPal - The safer, easier way to pay online!" 
-                  alt="Donate with PayPal button" 
-                  className="donate-img"
-                />
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal" alt="Donate" className="donate-img" />
                 <img alt="" border="0" src="https://www.paypal.com/en_ZA/i/scr/pixel.gif" width="1" height="1" />
               </form>
-              <p className="donate-note">
-                Every child deserves to explore the world, no matter their family's budget.
-                Your donation helps expand the map — more countries, more facts, more games.
-                So donate if you can. Every little bit helps.
-                If you can't, the map is still yours. Completely.
-                Thank you for believing in free, ad-free learning. 🌍
-              </p>
+              <p className="donate-note">Every child deserves to explore the world, no matter their family's budget. Your donation helps expand the map — more countries, more facts, more games. So donate if you can. Every little bit helps. If you can't, the map is still yours. Completely. Thank you for believing in free, ad-free learning. 🌍</p>
             </div>
-            
             <hr />
             <div className="premium-section">
               <h4>⭐ Premium (Coming Soon)</h4>
-              <ul>
-                <li>✓ All 195 countries</li>
-                <li>✓ Deep facts & quizzes</li>
-                <li>✓ 1,000+ workbook pages</li>
-                <li>✓ Timed challenges</li>
-                <li>✓ Multiple profiles</li>
-              </ul>
+              <ul><li>✓ All 195 countries</li><li>✓ Deep facts & quizzes</li><li>✓ 1,000+ workbook pages</li><li>✓ Timed challenges</li><li>✓ Multiple profiles</li></ul>
             </div>
             <hr />
             <div className="account-section">
               <button className="signout-btn" onClick={handleSignOut}>🔑 Sign Out</button>
               <button className="reset-progress-btn" onClick={resetAllProgress}>⚠️ Reset All Progress</button>
             </div>
-            <div className="pin-section">
-              <p className="pin-hint">🔒 Parent PIN: <strong>1234</strong></p>
-            </div>
+            <div className="pin-section"><p className="pin-hint">🔒 Parent PIN: <strong>1234</strong></p></div>
           </div>
         </div>
       )}
@@ -515,160 +457,62 @@ useEffect(() => {
             <div className="about-section"><h3>🔒 Privacy</h3><ul><li>✓ No personal data collected (guest mode)</li><li>✓ Google sign-in optional</li><li>✓ No tracking or cookies</li><li>✓ No ads ever</li></ul></div>
             <div className="about-section"><h3>📜 Terms</h3><ul><li>✓ Free for personal and classroom use</li><li>✓ May not be sold or redistributed</li><li>✓ Content for educational purposes only</li></ul></div>
             <div className="about-section"><h3>👶 Age Rating</h3><p>Designed for ages 4-10</p></div>
-            <div className="about-footer">
-              <p>© 2026 Denver C (PTY) Ltd. All rights reserved.</p>
-              <p>🐼 Penny & Peter Panda</p>
-              <p>"My Big World" is a trademark of Denver C (PTY) Ltd.</p>
-            </div>
+            <div className="about-footer"><p>© 2026 Denver C (PTY) Ltd. All rights reserved.</p><p>🐼 Penny & Peter Panda</p><p>"My Big World" is a trademark of Denver C (PTY) Ltd.</p></div>
             <button className="close-btn-large" onClick={() => setShowAbout(false)}>Close</button>
           </div>
         </div>
       )}
 
       <style jsx>{`
-      /* INTRO SCREEN UPDATED STYLES */
-.intro-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #0d2b4e 0%, #1a4e6e 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  font-family: 'Nunito', sans-serif;
-}
+        /* ========== INTRO SCREEN STYLES ========== */
+        .intro-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, #0d2b4e 0%, #1a4e6e 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          font-family: 'Nunito', sans-serif;
+        }
+        .intro-card {
+          background: white;
+          border-radius: 48px;
+          padding: 2.5rem 2rem;
+          max-width: 480px;
+          width: 90%;
+          text-align: center;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+          animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .intro-logo { font-size: 4.5rem; margin-bottom: 0.5rem; }
+        .intro-title { font-size: 2rem; color: #1e6f5c; margin: 0; font-weight: 800; }
+        .intro-subtitle { font-size: 0.9rem; color: #666; margin-top: 0.25rem; margin-bottom: 1.5rem; }
+        .intro-message { background: #f5f7fa; padding: 1rem; border-radius: 24px; margin: 1rem 0; }
+        .intro-message p { margin: 0.5rem 0; color: #333; font-size: 0.95rem; }
+        .intro-message p:first-child { font-weight: bold; color: #1e6f5c; }
+        .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
+        .intro-btn { padding: 0.85rem; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: transform 0.2s, box-shadow 0.2s; }
+        .intro-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .google-btn { background: #4285f4; color: white; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .google-icon { background: white; color: #4285f4; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+        .guest-btn { background: #f5f5f5; color: #555; border: 1px solid #ddd; }
+        .intro-note { font-size: 0.75rem; color: #1e6f5c; margin: 0.5rem 0 0.25rem; font-weight: 500; }
+        .intro-note-small { font-size: 0.7rem; color: #999; margin: 0; }
 
-.intro-card {
-  background: white;
-  border-radius: 48px;
-  padding: 2.5rem 2rem;
-  max-width: 480px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  animation: fadeInUp 0.6s ease;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.intro-logo {
-  font-size: 4.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.intro-title {
-  font-size: 2rem;
-  color: #1e6f5c;
-  margin: 0;
-  font-weight: 800;
-}
-
-.intro-subtitle {
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 0.25rem;
-  margin-bottom: 1.5rem;
-}
-
-.intro-message {
-  background: #f5f7fa;
-  padding: 1rem;
-  border-radius: 24px;
-  margin: 1rem 0;
-}
-
-.intro-message p {
-  margin: 0.5rem 0;
-  color: #333;
-  font-size: 0.95rem;
-}
-
-.intro-message p:first-child {
-  font-weight: bold;
-  color: #1e6f5c;
-}
-
-.intro-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 1.5rem 0;
-}
-
-.intro-btn {
-  padding: 0.85rem;
-  border-radius: 60px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  width: 100%;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.intro-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.google-btn {
-  background: #4285f4;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.google-icon {
-  background: white;
-  color: #4285f4;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.guest-btn {
-  background: #f5f5f5;
-  color: #555;
-  border: 1px solid #ddd;
-}
-
-.intro-note {
-  font-size: 0.75rem;
-  color: #1e6f5c;
-  margin: 0.5rem 0 0.25rem;
-  font-weight: 500;
-}
-
-.intro-note-small {
-  font-size: 0.7rem;
-  color: #999;
-  margin: 0;
-}
+        /* ========== MAIN APP STYLES ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         .app { font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1400px; margin: 0 auto; padding: 1rem; background: #0d2b4e; min-height: 100vh; }
         .loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #0d2b4e; color: white; }
         .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .intro-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0d2b4e; display: flex; align-items: center; justify-content: center; z-index: 10000; }
         .header { text-align: center; padding: 1rem; background: #1e6f5c; color: white; border-radius: 32px; margin-bottom: 2rem; }
         .logo-area { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.25rem; }
         .panda-icon { font-size: 2rem; }
@@ -709,15 +553,22 @@ useEffect(() => {
         .stamp-flag { font-size: 1.3rem; }
         .stamp-name { font-size: 0.7rem; }
         .stamp-count { text-align: center; margin-top: 0.75rem; font-weight: bold; color: #1e6f5c; }
+        
+        /* Footer Styles */
         .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
-        .footer-main { display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+        .footer-message { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
         .footer-pandas { font-size: 1.2rem; }
-        .footer-message { font-size: 0.8rem; color: #1e6f5c; font-weight: bold; }
-        .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 60px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
+        .footer-text { font-size: 0.8rem; color: #1e6f5c; font-weight: bold; }
+        .donate-row { display: flex; justify-content: center; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem; padding: 0.5rem 0.75rem; background: #f0f7f4; border-radius: 60px; }
+        .donate-text { font-size: 0.75rem; color: #1e6f5c; font-weight: 600; }
+        .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.4rem 1rem; border-radius: 60px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
         .donate-footer-btn:hover { background: #005c99; }
         .footer-links { display: flex; justify-content: center; gap: 1rem; margin: 0.5rem 0; }
         .about-btn { background: none; border: none; color: #1e6f5c; font-size: 0.7rem; cursor: pointer; text-decoration: underline; }
+        .separator { color: #ccc; }
         .footer-hint { font-size: 0.65rem; color: #1e6f5c; margin-top: 0.25rem; cursor: pointer; }
+
+        /* Modal & Celebration Styles */
         .celebration-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; }
         .celebration-content { text-align: center; background: linear-gradient(135deg, #ffd966, #ff9800); padding: 2rem; border-radius: 48px; }
         .celebration-badge { font-size: 1.5rem; font-weight: bold; color: #1e6f5c; background: white; padding: 0.75rem 1.5rem; border-radius: 60px; margin-bottom: 0.75rem; }
@@ -752,6 +603,7 @@ useEffect(() => {
         .about-section ul { margin-left: 1rem; font-size: 0.85rem; }
         .about-footer { text-align: center; margin-top: 1rem; font-size: 0.7rem; color: #999; }
         .close-btn-large { background: #1e6f5c; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 60px; cursor: pointer; width: 100%; margin-top: 1rem; }
+        
         @media (max-width: 768px) { .main-container { flex-direction: column; } .right-panel { max-width: 100%; } .header h1 { font-size: 1.3rem; } }
       `}</style>
     </div>

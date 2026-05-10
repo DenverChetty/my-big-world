@@ -103,27 +103,29 @@ function App() {
   }, [stamps, clickedCountries, user]);
 
   // Badge milestones
-  useEffect(() => {
-    if (stamps.length === 10 && !celebrationTriggered.current) {
-      celebrationTriggered.current = true;
-      setCelebrationMessage("🏆 NOVICE EXPLORER! You've collected 10 stamps!");
-      setShowCelebration(true);
-      const utterance = new SpeechSynthesisUtterance("Woo hoo! You're a Novice Explorer!");
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-      setTimeout(() => setShowCelebration(false), 4000);
-    } else if (stamps.length === 20 && !celebrationTriggered.current) {
-      celebrationTriggered.current = true;
-      setCelebrationMessage("🏆 EXPLORER! You've collected 20 stamps!");
-      setShowCelebration(true);
-      const utterance = new SpeechSynthesisUtterance("Amazing! You're an Explorer!");
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-      setTimeout(() => setShowCelebration(false), 4000);
-    }
-  }, [stamps]);
+useEffect(() => {
+  if (stamps.length === 10 && !celebrationTriggered.current) {
+    celebrationTriggered.current = true;
+    setCelebrationMessage("🏆 NOVICE EXPLORER! You've collected 10 stamps!");
+    setShowCelebration(true);
+    const utterance = new SpeechSynthesisUtterance("Woo hoo! Amazing! You're a Novice Explorer!");
+    utterance.rate = 0.9;
+    utterance.pitch = 1.4;
+    selectBestVoice(utterance);
+    window.speechSynthesis.speak(utterance);
+    setTimeout(() => setShowCelebration(false), 4000);
+  } else if (stamps.length === 20 && !celebrationTriggered.current) {
+    celebrationTriggered.current = true;
+    setCelebrationMessage("🏆 EXPLORER! You've collected 20 stamps!");
+    setShowCelebration(true);
+    const utterance = new SpeechSynthesisUtterance("Fantastic! You're an Explorer!");
+    utterance.rate = 0.9;
+    utterance.pitch = 1.4;
+    selectBestVoice(utterance);
+    window.speechSynthesis.speak(utterance);
+    setTimeout(() => setShowCelebration(false), 4000);
+  }
+}, [stamps]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -170,43 +172,71 @@ function App() {
 
   // Helper function to select best voice for pronunciation
   const selectBestVoice = (utterance) => {
-    const voices = window.speechSynthesis.getVoices();
-    // Prefer Google UK voices or Samantha for better foreign word pronunciation
-    const preferredVoice = voices.find(v => 
-      v.name.includes('Google UK') || 
-      v.name.includes('Samantha') || 
-      v.name.includes('Microsoft David') ||
-      (v.lang === 'en-GB' && !v.name.includes('US'))
-    );
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-  };
-
-  const speakCountryInfo = (country) => {
-    // Stop any ongoing speech first
-    window.speechSynthesis.cancel();
-    
-    if (country.id === "unknown") {
-      const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon!`);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      selectBestVoice(utterance);
-      window.speechSynthesis.speak(utterance);
+  const voices = window.speechSynthesis.getVoices();
+  
+  // Priority order for female, warm, kid-friendly voices
+  const preferredVoices = [
+    'Google UK English Female',
+    'Google US English Female', 
+    'Microsoft Susan',
+    'Microsoft Zira',
+    'Samantha',
+    'Karen',
+    'Google UK English Male',  // fallback
+    'Google US English Male'   // fallback
+  ];
+  
+  // Try to find a preferred female voice
+  for (const preferred of preferredVoices) {
+    const voice = voices.find(v => v.name.includes(preferred));
+    if (voice) {
+      utterance.voice = voice;
       return;
     }
-    
-    // Use phonetic version for foreign words
-    const helloToSay = country.helloPhonetic || country.hello;
-    
-    const text = `Let's learn about ${country.name}! ${country.name}'s capital is ${country.capital}. ${country.name} has about ${country.population} people. The main language is ${country.language}. To say hello, you say ${helloToSay}. The famous animal is the ${country.animal}. A popular food is ${country.food}. Here's a fun fact: ${country.funFact}`;
-    
-    const utterance = new SpeechSynthesisUtterance(text);
+  }
+  
+  // Fallback: find any female voice
+  const femaleVoice = voices.find(v => 
+    v.lang.startsWith('en') && 
+    (v.name.includes('Female') || v.name === 'Samantha' || v.name === 'Karen')
+  );
+  if (femaleVoice) {
+    utterance.voice = femaleVoice;
+  }
+};
+
+  const speakCountryInfo = (country) => {
+  // Stop any ongoing speech first
+  window.speechSynthesis.cancel();
+  
+  if (country.id === "unknown") {
+    const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
     utterance.rate = 0.85;
-    utterance.pitch = 1.0;
+    utterance.pitch = 1.2;  // Higher pitch for excitement
     selectBestVoice(utterance);
     window.speechSynthesis.speak(utterance);
-  };
+    return;
+  }
+  
+  // Use phonetic version for foreign words
+  const helloToSay = country.helloPhonetic || country.hello;
+  
+  // Cheerful, engaging narration
+  const text = `🎉 Let's explore ${country.name}! 🎉 
+  The capital is ${country.capital}! 
+  ${country.name} is home to about ${country.population} people. 
+  People speak ${country.language} here. To say hello, you say ${helloToSay}! 
+  ${country.name} is famous for the ${country.animal}! ${country.animalEmoji} 
+  And the food? ${country.food} is delicious! ${country.foodEmoji} 
+  Here's something amazing: ${country.funFact}`;
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.85;
+  utterance.pitch = 1.3;  // Higher pitch = more exciting, kid-friendly
+  volume: 1,
+  selectBestVoice(utterance);
+  window.speechSynthesis.speak(utterance);
+};
 
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
@@ -251,14 +281,21 @@ function App() {
         <p className="intro-subtitle">with Penny and Peter Panda</p>
         
         <div className="intro-message">
-          <p>Hi! We're Penny and Peter.</p>
-          <p>We travel to different countries, collect stamps, and learn how to say hello in new languages.</p>
-          <p>Want to come with us?</p>
+          <p>✨ Hi! We're Penny and Peter! ✨</p>
+          <p>We explore countries, collect stamps, and learn new languages!</p>
+          <p><strong>Want to come with us?</strong></p>
         </div>
         
         <div className="intro-buttons">
           <button className="intro-btn google-btn" onClick={handleGoogleSignIn}>
-            <span className="google-icon">G</span>
+            <span className="google-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+            </span>
             Sign in with Google
           </button>
           <button className="intro-btn guest-btn" onClick={() => setShowIntro(false)}>
@@ -266,7 +303,7 @@ function App() {
           </button>
         </div>
         
-        <p className="intro-note">✨ Sign in to save your stamps across any device</p>
+        <p className="intro-note">🔐 Sign in to save your stamps on any device</p>
         <p className="intro-note-small">Guest mode saves progress on this device only</p>
       </div>
     </div>
@@ -397,21 +434,24 @@ function App() {
         </section>
       </div>
 
-      <footer className="footer">
-        <div className="footer-main">
-          <span className="footer-pandas">🐼🐼</span>
-          <span className="footer-message">My Big World — Ad-free. Forever.</span>
-          <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
-            💝 Donate
-          </button>
-        </div>
-        <div className="footer-links">
-          <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
-          <span className="separator">|</span>
-          <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
-        </div>
-        <p className="footer-hint">👆 Hold here for 3 seconds (parent settings)</p>
-      </footer>
+     <footer className="footer">
+  <div className="footer-message">
+    <span className="footer-pandas">🐼🐼</span>
+    <span className="footer-text">My Big World — Ad-free. Forever.</span>
+  </div>
+  <div className="donate-row">
+    <span className="donate-text">💝 Donate to keep this app ad-free</span>
+    <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
+      Donate Now
+    </button>
+  </div>
+  <div className="footer-links">
+    <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
+    <span className="separator">|</span>
+    <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
+  </div>
+  <p className="footer-hint">👆 Hold here for 3 seconds (parent settings)</p>
+</footer>
 
       {showParentGate && (
         <div className="modal-overlay">

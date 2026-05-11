@@ -629,8 +629,8 @@ function App() {
         
         /* Footer Styles */
         .footer-logo {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
 }
         .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }

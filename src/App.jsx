@@ -669,7 +669,7 @@ function App() {
   .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
   @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
   .header { text-align: center; padding: 1rem; background: #1e6f5c; border-radius: 32px; margin-bottom: 2rem; }
-  .header-logo { width: 180px; max-width: 90%; height: auto; object-fit: contain; }
+  .header-logo { width: 220px; max-width: 90%; height: auto; object-fit: contain; }
   .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
   .map-section { flex: 1.5; min-width: 0; }
   .right-panel { flex: 0.8; min-width: 280px; max-width: 380px; display: flex; flex-direction: column; gap: 1.5rem; }

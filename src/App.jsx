@@ -542,27 +542,24 @@ function App() {
           z-index: 10000;
         }
         .intro-card {
-          background: white;
-          border-radius: 48px;
-          padding: 2.5rem 2rem;
-          max-width: 480px;
-          width: 90%;
-          text-align: center;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-          animation: fadeInUp 0.6s ease;
-        }
+  background: #1e2f3e;  /* dark blue-gray */
+  border-radius: 48px;
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  animation: fadeInUp 0.6s ease;
+}
+.intro-message p { margin: 0.5rem 0; color: white; font-size: 0.95rem; }
+.intro-message p:first-child { font-weight: bold; color: #ffd966; }
+.intro-note { font-size: 0.75rem; color: #ffd966; margin: 0.5rem 0 0.25rem; font-weight: 500; }
+.intro-note-small { font-size: 0.7rem; color: rgba(255,255,255,0.7); margin: 0; }
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
-        .intro-title { font-size: 2rem; color: #ffffff; margin: 0; font-weight: 800; }
-        .intro-subtitle { font-size: 0.9rem; color: #ffffff; margin-top: 0.25rem; margin-bottom: 1.5rem; }
-       .intro-message p {
-  margin: 0.5rem 0;
-  color: white;  /* was dark, now white */
-  font-size: 0.95rem;
-}
         .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
         .intro-btn { padding: 0.85rem; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: transform 0.2s; }
         .intro-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }

@@ -194,25 +194,187 @@ function App() {
     );
     if (femaleVoice) utterance.voice = femaleVoice;
   };
+// Helper function for language codes (add this before speakCountryInfo)
+const getLanguageCode = (language) => {
+  const codes = {
+    'Japanese': 'ja-JP',
+    'French': 'fr-FR',
+    'Portuguese': 'pt-BR',
+    'Arabic': 'ar-EG',
+    'Hindi': 'hi-IN',
+    'Swahili': 'sw-KE',
+    'Italian': 'it-IT',
+    'Spanish': 'es-ES',
+    'German': 'de-DE',
+    'Mandarin': 'zh-CN',
+    'Thai': 'th-TH',
+    'Turkish': 'tr-TR',
+    'Swedish': 'sv-SE',
+    'Norwegian': 'nb-NO'
+  };
+  return codes[language] || 'en-US';
+};
 
-  const speakCountryInfo = (country) => {
-    window.speechSynthesis.cancel();
-    if (country.id === "unknown") {
-      const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
-      utterance.rate = 0.85;
-      utterance.pitch = 1.2;
-      selectBestVoice(utterance);
-      window.speechSynthesis.speak(utterance);
+// Helper function for language codes
+const getLanguageCode = (language) => {
+  const codes = {
+    'Japanese': 'ja-JP',
+    'French': 'fr-FR',
+    'Portuguese': 'pt-BR',
+    'Arabic': 'ar-EG',
+    'Hindi': 'hi-IN',
+    'Swahili': 'sw-KE',
+    'Italian': 'it-IT',
+    'Spanish': 'es-ES',
+    'German': 'de-DE',
+    'Mandarin': 'zh-CN',
+    'Thai': 'th-TH',
+    'Turkish': 'tr-TR',
+    'Swedish': 'sv-SE',
+    'Norwegian': 'nb-NO'
+  };
+  return codes[language] || 'en-US';
+};
+
+// Helper function to select best voice
+const selectBestVoice = (utterance) => {
+  const voices = window.speechSynthesis.getVoices();
+  const preferredVoices = [
+    'Google UK English Female',
+    'Google US English Female',
+    'Microsoft Susan',
+    'Microsoft Zira',
+    'Samantha',
+    'Karen'
+  ];
+  for (const preferred of preferredVoices) {
+    const voice = voices.find(v => v.name?.includes(preferred));
+    if (voice) {
+      utterance.voice = voice;
       return;
     }
-    const helloToSay = country.helloPhonetic || country.hello;
-    const text = `Let's explore ${country.name}! The capital is ${country.capital}. ${country.name} is home to about ${country.population} people. People speak ${country.language} here. To say hello, you say ${helloToSay}. ${country.name} is famous for the ${country.animal}. And the food? ${country.food} is delicious! Here's something amazing: ${country.funFact}`;
-    const utterance = new SpeechSynthesisUtterance(text);
+  }
+  const femaleVoice = voices.find(v =>
+    v.lang?.startsWith('en') &&
+    (v.name?.includes('Female') || v.name === 'Samantha' || v.name === 'Karen')
+  );
+  if (femaleVoice) utterance.voice = femaleVoice;
+};
+
+// ONLY ONE speakCountryInfo function (the good one with language codes)
+const speakCountryInfo = (country) => {
+  window.speechSynthesis.cancel();
+  
+  if (country.id === "unknown") {
+    const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
     utterance.rate = 0.85;
-    utterance.pitch = 1.3;
+    utterance.pitch = 1.1;
     selectBestVoice(utterance);
     window.speechSynthesis.speak(utterance);
+    return;
+  }
+  
+  const helloToSay = country.helloPhonetic || country.hello;
+  const languageCode = getLanguageCode(country.language);
+  
+  // Break into smaller parts for better pronunciation
+  const sentences = [
+    `Let's explore ${country.name}!`,
+    `The capital is ${country.capital}.`,
+    `${country.name} is home to about ${country.population} people.`,
+    `People speak ${country.language} here.`,
+  ];
+  
+  let index = 0;
+  
+  const speakNext = () => {
+    if (index >= sentences.length) {
+      // After main sentences, say the hello phrase with native language voice
+      const helloUtterance = new SpeechSynthesisUtterance(`To say hello, you say... ${helloToSay}!`);
+      helloUtterance.rate = 0.8;
+      helloUtterance.pitch = 1.15;
+      helloUtterance.lang = languageCode;
+      selectBestVoice(helloUtterance);
+      window.speechSynthesis.speak(helloUtterance);
+      
+      // Then the rest of the facts
+      helloUtterance.onend = () => {
+        const factUtterance = new SpeechSynthesisUtterance(`${country.name} is famous for the ${country.animal}. Their famous food is ${country.food}. Here's a fun fact: ${country.funFact}`);
+        factUtterance.rate = 0.85;
+        factUtterance.pitch = 1.15;
+        selectBestVoice(factUtterance);
+        window.speechSynthesis.speak(factUtterance);
+      };
+      return;
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(sentences[index]);
+    utterance.rate = 0.85;
+    utterance.pitch = 1.15;
+    utterance.volume = 1;
+    selectBestVoice(utterance);
+    
+    utterance.onend = () => {
+      index++;
+      setTimeout(speakNext, 300);
+    };
+    
+    window.speechSynthesis.speak(utterance);
   };
+  
+  speakNext();
+};
+
+const stopSpeaking = () => {
+  window.speechSynthesis.cancel();
+};
+  const speakCountryInfo = (country) => {
+  window.speechSynthesis.cancel();
+  
+  if (country.id === "unknown") {
+    const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
+    utterance.rate = 0.85;
+    utterance.pitch = 1.1;
+    selectBestVoice(utterance);
+    window.speechSynthesis.speak(utterance);
+    return;
+  }
+  
+  // Break down foreign words with pauses for better pronunciation
+  const helloToSay = country.helloPhonetic || country.hello;
+  
+  // Add natural pauses between sentences for better flow
+  const sentences = [
+    `Let's explore ${country.name}!`,
+    `The capital is ${country.capital}.`,
+    `${country.name} is home to about ${country.population} people.`,
+    `People speak ${country.language} here. To say hello, you say... ${helloToSay}!`,
+    `${country.name} is famous for the ${country.animal}.`,
+    `Their famous food is ${country.food}.`,
+    `Here's a fun fact: ${country.funFact}`
+  ];
+  
+  let index = 0;
+  
+  const speakNext = () => {
+    if (index >= sentences.length) return;
+    
+    const utterance = new SpeechSynthesisUtterance(sentences[index]);
+    utterance.rate = 0.85;
+    utterance.pitch = 1.15;
+    utterance.volume = 1;
+    selectBestVoice(utterance);
+    
+    utterance.onend = () => {
+      index++;
+      setTimeout(speakNext, 400); // Longer pause between sentences
+    };
+    
+    window.speechSynthesis.speak(utterance);
+  };
+  
+  speakNext();
+};
 
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
@@ -361,9 +523,17 @@ function App() {
                 <span className="card-flag">{selectedCountry.flagEmoji}</span>
                 <h2>{selectedCountry.name}</h2>
                 <div className="audio-buttons">
-                  <button className="speaker-btn" onClick={() => speakCountryInfo(selectedCountry)}>🔊</button>
-                  <button className="stop-btn" onClick={stopSpeaking}>⏹️</button>
-                </div>
+  <button className="play-btn" onClick={() => speakCountryInfo(selectedCountry)} title="Listen">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+      <polygon points="5 3 19 12 5 21 5 3" />
+    </svg>
+  </button>
+  <button className="stop-btn" onClick={stopSpeaking} title="Stop">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+      <rect x="6" y="6" width="12" height="12" />
+    </svg>
+  </button>
+</div>
               </div>
               <div className="card-details">
                 <p><strong>🏛️ Capital:</strong> {selectedCountry.capital}</p>
@@ -540,8 +710,34 @@ function App() {
         .card-flag { font-size: 2.5rem; }
         .card-header h2 { flex: 1; color: #1e6f5c; font-size: 1.3rem; }
         .audio-buttons { display: flex; gap: 0.5rem; }
-        .speaker-btn { background: #ffd966; border: none; font-size: 1.2rem; padding: 0.4rem 0.8rem; border-radius: 60px; cursor: pointer; }
-        .stop-btn { background: #e0e0e0; border: none; font-size: 1.2rem; padding: 0.4rem 0.8rem; border-radius: 60px; cursor: pointer; }
+        .play-btn, .stop-btn {
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-btn {
+  background: #4caf50;
+}
+
+.play-btn:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
+
+.stop-btn {
+  background: #f44336;
+}
+
+.stop-btn:hover {
+  background: #d32f2f;
+  transform: scale(1.05);
+}
         .card-details p { margin: 0.6rem 0; font-size: 0.85rem; }
         .stamp-shelf { background: white; border-radius: 24px; padding: 1.25rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         .stamp-header h3 { text-align: center; margin-bottom: 0.75rem; color: #1e6f5c; }

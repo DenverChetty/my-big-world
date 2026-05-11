@@ -7,26 +7,26 @@ import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 // COUNTRY DATA (20 countries)
 // ============================================
 const countriesData = {
-  "japan": { id: "japan", name: "Japan", capital: "Tokyo", population: "125 million", language: "Japanese", hello: "Konnichiwa", helloPhonetic: "Kohn-nee-chee-wah", animal: "Snow Monkey", animalEmoji: "🐒", food: "Sushi", foodEmoji: "🍣", funFact: "Japan has special vending machines that sell toys, eggs, and umbrellas!", flagEmoji: "🇯🇵", continent: "Asia" },
-  "france": { id: "france", name: "France", capital: "Paris", population: "68 million", language: "French", hello: "Bonjour", helloPhonetic: "Bohn-zhoor", animal: "Gallic Rooster", animalEmoji: "🐓", food: "Baguette", foodEmoji: "🥖", funFact: "France produces over 1,000 types of cheese!", flagEmoji: "🇫🇷", continent: "Europe" },
-  "brazil": { id: "brazil", name: "Brazil", capital: "Brasília", population: "213 million", language: "Portuguese", hello: "Olá", helloPhonetic: "Oh-lah", animal: "Jaguar", animalEmoji: "🐆", food: "Feijoada", foodEmoji: "🍲", funFact: "Brazil has the most plant species in the world!", flagEmoji: "🇧🇷", continent: "South America" },
-  "australia": { id: "australia", name: "Australia", capital: "Canberra", population: "25 million", language: "English", hello: "G'day", helloPhonetic: "Guh-day", animal: "Kangaroo", animalEmoji: "🦘", food: "Vegemite", foodEmoji: "🍞", funFact: "Australia is wider than the Moon!", flagEmoji: "🇦🇺", continent: "Oceania" },
-  "egypt": { id: "egypt", name: "Egypt", capital: "Cairo", population: "109 million", language: "Arabic", hello: "Marhaba", helloPhonetic: "Mar-hah-bah", animal: "Mau Cat", animalEmoji: "🐱", food: "Koshari", foodEmoji: "🍚", funFact: "Home to the last standing ancient wonder!", flagEmoji: "🇪🇬", continent: "Africa" },
-  "canada": { id: "canada", name: "Canada", capital: "Ottawa", population: "38 million", language: "English/French", hello: "Hello/Bonjour", helloPhonetic: "Heh-loh / Bohn-zhoor", animal: "Beaver", animalEmoji: "🦫", food: "Poutine", foodEmoji: "🍟", funFact: "Canada has more lakes than the rest of the world combined!", flagEmoji: "🇨🇦", continent: "North America" },
-  "india": { id: "india", name: "India", capital: "New Delhi", population: "1.4 billion", language: "Hindi", hello: "Namaste", helloPhonetic: "Nah-mah-stay", animal: "Bengal Tiger", animalEmoji: "🐅", food: "Biryani", foodEmoji: "🍛", funFact: "India has the world's largest vegetarian population!", flagEmoji: "🇮🇳", continent: "Asia" },
-  "kenya": { id: "kenya", name: "Kenya", capital: "Nairobi", population: "54 million", language: "Swahili", hello: "Jambo", helloPhonetic: "Jahm-boh", animal: "Lion", animalEmoji: "🦁", food: "Nyama Choma", foodEmoji: "🍖", funFact: "The Great Migration has over 1.5 million animals!", flagEmoji: "🇰🇪", continent: "Africa" },
-  "italy": { id: "italy", name: "Italy", capital: "Rome", population: "60 million", language: "Italian", hello: "Ciao", helloPhonetic: "Chow", animal: "Wolf", animalEmoji: "🐺", food: "Pizza", foodEmoji: "🍕", funFact: "Italy has the most UNESCO World Heritage sites!", flagEmoji: "🇮🇹", continent: "Europe" },
-  "mexico": { id: "mexico", name: "Mexico", capital: "Mexico City", population: "126 million", language: "Spanish", hello: "Hola", helloPhonetic: "Oh-lah", animal: "Golden Eagle", animalEmoji: "🦅", food: "Tacos", foodEmoji: "🌮", funFact: "Mexico has 68 official languages!", flagEmoji: "🇲🇽", continent: "North America" },
-  "germany": { id: "germany", name: "Germany", capital: "Berlin", population: "83 million", language: "German", hello: "Hallo", helloPhonetic: "Hah-loh", animal: "Eagle", animalEmoji: "🦅", food: "Bratwurst", foodEmoji: "🌭", funFact: "Germany has over 1,500 types of sausages!", flagEmoji: "🇩🇪", continent: "Europe" },
-  "spain": { id: "spain", name: "Spain", capital: "Madrid", population: "47 million", language: "Spanish", hello: "Hola", helloPhonetic: "Oh-lah", animal: "Bull", animalEmoji: "🐂", food: "Paella", foodEmoji: "🥘", funFact: "Spain has the second most UNESCO sites!", flagEmoji: "🇪🇸", continent: "Europe" },
-  "southafrica": { id: "southafrica", name: "South Africa", capital: "Pretoria", population: "60 million", language: "11 official", hello: "Sawubona", helloPhonetic: "Sah-woo-boh-nah", animal: "Springbok", animalEmoji: "🦌", food: "Biltong", foodEmoji: "🥩", funFact: "South Africa has 3 capital cities!", flagEmoji: "🇿🇦", continent: "Africa" },
-  "argentina": { id: "argentina", name: "Argentina", capital: "Buenos Aires", population: "45 million", language: "Spanish", hello: "Hola", helloPhonetic: "Oh-lah", animal: "Jaguar", animalEmoji: "🐆", food: "Asado", foodEmoji: "🥩", funFact: "Argentina is home to the world's widest river!", flagEmoji: "🇦🇷", continent: "South America" },
-  "china": { id: "china", name: "China", capital: "Beijing", population: "1.4 billion", language: "Mandarin", hello: "Nǐ hǎo", helloPhonetic: "Nee how", animal: "Giant Panda", animalEmoji: "🐼", food: "Dumplings", foodEmoji: "🥟", funFact: "China has the world's largest population!", flagEmoji: "🇨🇳", continent: "Asia" },
-  "thailand": { id: "thailand", name: "Thailand", capital: "Bangkok", population: "70 million", language: "Thai", hello: "Sawasdee", helloPhonetic: "Sah-wah-dee", animal: "Elephant", animalEmoji: "🐘", food: "Pad Thai", foodEmoji: "🍜", funFact: "Thailand is called the 'Land of Smiles'!", flagEmoji: "🇹🇭", continent: "Asia" },
-  "turkey": { id: "turkey", name: "Turkey", capital: "Ankara", population: "84 million", language: "Turkish", hello: "Merhaba", helloPhonetic: "Mehr-hah-bah", animal: "Wolf", animalEmoji: "🐺", food: "Kebab", foodEmoji: "🍖", funFact: "Istanbul spans two continents!", flagEmoji: "🇹🇷", continent: "Europe/Asia" },
-  "sweden": { id: "sweden", name: "Sweden", capital: "Stockholm", population: "10 million", language: "Swedish", hello: "Hej", helloPhonetic: "Hay", animal: "Moose", animalEmoji: "🦌", food: "Meatballs", foodEmoji: "🍝", funFact: "Sweden has over 100,000 lakes!", flagEmoji: "🇸🇪", continent: "Europe" },
-  "norway": { id: "norway", name: "Norway", capital: "Oslo", population: "5 million", language: "Norwegian", hello: "Hei", helloPhonetic: "Hay", animal: "Moose", animalEmoji: "🦌", food: "Salmon", foodEmoji: "🐟", funFact: "Norway has the longest coastline in Europe!", flagEmoji: "🇳🇴", continent: "Europe" },
-  "newzealand": { id: "newzealand", name: "New Zealand", capital: "Wellington", population: "5 million", language: "English/Maori", hello: "Kia ora", helloPhonetic: "Kee-ah oh-rah", animal: "Kiwi", animalEmoji: "🐦", food: "Fish and chips", foodEmoji: "🐟", funFact: "First country to give women the vote!", flagEmoji: "🇳🇿", continent: "Oceania" }
+  "japan": { id: "japan", name: "Japan", capital: "Tokyo", population: "125 million", language: "Japanese", hello: "Konnichiwa", helloPhonetic: "Kohn-nee-chee-wah", animal: "Snow Monkey", animalEmoji: "🐒", food: "Sushi", foodEmoji: "🍣", funFact: "Japan has sooooo many islands — over 6,800! You couldn't visit them all in a whole year.", flagEmoji: "🇯🇵", continent: "Asia" },
+  "france": { id: "france", name: "France", capital: "Paris", population: "68 million", language: "French", hello: "Bonjour", helloPhonetic: "Bohn-zhoor", animal: "Gallic Rooster", animalEmoji: "🐓", food: "Baguette", foodEmoji: "🥖", funFact: "France makes over 1,000 kinds of cheese! That's a different cheese for every day of the year, plus more.", flagEmoji: "🇫🇷", continent: "Europe" },
+  "brazil": { id: "brazil", name: "Brazil", capital: "Brasília", population: "213 million", language: "Portuguese", hello: "Olá", helloPhonetic: "Oh-lah", animal: "Jaguar", animalEmoji: "🐆", food: "Feijoada", foodEmoji: "🍲", funFact: "Brazil has the most animals and plants of any country. The Amazon rainforest is like a giant treasure chest full of surprises!", flagEmoji: "🇧🇷", continent: "South America" },
+  "australia": { id: "australia", name: "Australia", capital: "Canberra", population: "25 million", language: "English", hello: "G'day", helloPhonetic: "Guh-day", animal: "Kangaroo", animalEmoji: "🦘", food: "Vegemite", foodEmoji: "🍞", funFact: "Australia is both a country AND a continent — the only one in the whole world!", flagEmoji: "🇦🇺", continent: "Oceania" },
+  "egypt": { id: "egypt", name: "Egypt", capital: "Cairo", population: "109 million", language: "Arabic", hello: "Marhaba", helloPhonetic: "Mar-hah-bah", animal: "Mau Cat", animalEmoji: "🐱", food: "Koshari", foodEmoji: "🍚", funFact: "The Great Pyramid was the tallest thing on Earth for over 3,800 years! That's older than your grandparents' grandparents.", flagEmoji: "🇪🇬", continent: "Africa" },
+  "canada": { id: "canada", name: "Canada", capital: "Ottawa", population: "38 million", language: "English/French", hello: "Hello/Bonjour", helloPhonetic: "Heh-loh / Bohn-zhoor", animal: "Beaver", animalEmoji: "🦫", food: "Poutine", foodEmoji: "🍟", funFact: "Canada has so many lakes — over 2 million! You could splash in a new one every single day for years.", flagEmoji: "🇨🇦", continent: "North America" },
+  "india": { id: "india", name: "India", capital: "New Delhi", population: "1.4 billion", language: "Hindi", hello: "Namaste", helloPhonetic: "Nah-mah-stay", animal: "Bengal Tiger", animalEmoji: "🐅", food: "Biryani", foodEmoji: "🍛", funFact: "India has 22 official languages! So many different ways to say hello.", flagEmoji: "🇮🇳", continent: "Asia" },
+  "kenya": { id: "kenya", name: "Kenya", capital: "Nairobi", population: "54 million", language: "Swahili", hello: "Jambo", helloPhonetic: "Jahm-boh", animal: "Lion", animalEmoji: "🦁", food: "Nyama Choma", foodEmoji: "🍖", funFact: "Every year, over 1.5 million animals march across Kenya's plains — the biggest animal parade on Earth!", flagEmoji: "🇰🇪", continent: "Africa" },
+  "italy": { id: "italy", name: "Italy", capital: "Rome", population: "60 million", language: "Italian", hello: "Ciao", helloPhonetic: "Chow", animal: "Wolf", animalEmoji: "🐺", food: "Pizza", foodEmoji: "🍕", funFact: "Italy has more cool old places than any other country — over 50! Castles, towers, and ancient buildings everywhere.", flagEmoji: "🇮🇹", continent: "Europe" },
+  "mexico": { id: "mexico", name: "Mexico", capital: "Mexico City", population: "126 million", language: "Spanish", hello: "Hola", helloPhonetic: "Oh-lah", animal: "Golden Eagle", animalEmoji: "🦅", food: "Tacos", foodEmoji: "🌮", funFact: "Mexico has 68 official languages! Spanish is just one of them.", flagEmoji: "🇲🇽", continent: "North America" },
+  "germany": { id: "germany", name: "Germany", capital: "Berlin", population: "83 million", language: "German", hello: "Hallo", helloPhonetic: "Hah-loh", animal: "Eagle", animalEmoji: "🦅", food: "Bratwurst", foodEmoji: "🌭", funFact: "Germany has over 1,500 kinds of sausages! That's more sausages than you could ever eat.", flagEmoji: "🇩🇪", continent: "Europe" },
+  "spain": { id: "spain", name: "Spain", capital: "Madrid", population: "47 million", language: "Spanish", hello: "Hola", helloPhonetic: "Oh-lah", animal: "Bull", animalEmoji: "🐂", food: "Paella", foodEmoji: "🥘", funFact: "Spain makes more olive oil than any other country. That's a whole lot of olives!", flagEmoji: "🇪🇸", continent: "Europe" },
+  "southafrica": { id: "southafrica", name: "South Africa", capital: "Pretoria", population: "60 million", language: "11 official", hello: "Sawubona", helloPhonetic: "Sah-woo-boh-nah", animal: "Springbok", animalEmoji: "🦌", food: "Biltong", foodEmoji: "🥩", funFact: "South Africa has three capital cities! Pretoria, Cape Town, and Bloemfontein. That's more than any other country!", flagEmoji: "🇿🇦", continent: "Africa" },
+  "argentina": { id: "argentina", name: "Argentina", capital: "Buenos Aires", population: "45 million", language: "Spanish", hello: "Hola", helloPhonetic: "Oh-lah", animal: "Jaguar", animalEmoji: "🐆", food: "Asado", foodEmoji: "🥩", funFact: "Argentina has the widest river in the world — so wide you can't see the other side!", flagEmoji: "🇦🇷", continent: "South America" },
+  "china": { id: "china", name: "China", capital: "Beijing", population: "1.4 billion", language: "Mandarin", hello: "Nǐ hǎo", helloPhonetic: "Nee how", animal: "Giant Panda", animalEmoji: "🐼", food: "Dumplings", foodEmoji: "🥟", funFact: "China has more people than any other country — over 1.4 billion! That's a whole lot of friends to make.", flagEmoji: "🇨🇳", continent: "Asia" },
+  "thailand": { id: "thailand", name: "Thailand", capital: "Bangkok", population: "70 million", language: "Thai", hello: "Sawasdee", helloPhonetic: "Sah-wah-dee", animal: "Elephant", animalEmoji: "🐘", food: "Pad Thai", foodEmoji: "🍜", funFact: "Thailand is called the 'Land of Smiles' because everyone is so friendly there!", flagEmoji: "🇹🇭", continent: "Asia" },
+  "turkey": { id: "turkey", name: "Turkey", capital: "Ankara", population: "84 million", language: "Turkish", hello: "Merhaba", helloPhonetic: "Mehr-hah-bah", animal: "Wolf", animalEmoji: "🐺", food: "Kebab", foodEmoji: "🍖", funFact: "Istanbul is the only city in the world that sits on two continents — Europe and Asia!", flagEmoji: "🇹🇷", continent: "Europe/Asia" },
+  "sweden": { id: "sweden", name: "Sweden", capital: "Stockholm", population: "10 million", language: "Swedish", hello: "Hej", helloPhonetic: "Hay", animal: "Moose", animalEmoji: "🦌", food: "Meatballs", foodEmoji: "🍝", funFact: "Sweden has over 100,000 lakes! That's more lakes than you could ever visit.", flagEmoji: "🇸🇪", continent: "Europe" },
+  "norway": { id: "norway", name: "Norway", capital: "Oslo", population: "5 million", language: "Norwegian", hello: "Hei", helloPhonetic: "Hay", animal: "Moose", animalEmoji: "🦌", food: "Salmon", foodEmoji: "🐟", funFact: "Norway has the longest coastline in Europe — so long you could walk for months and never reach the end!", flagEmoji: "🇳🇴", continent: "Europe" },
+  "newzealand": { id: "newzealand", name: "New Zealand", capital: "Wellington", population: "5 million", language: "English/Maori", hello: "Kia ora", helloPhonetic: "Kee-ah oh-rah", animal: "Kiwi", animalEmoji: "🐦", food: "Fish and chips", foodEmoji: "🐟", funFact: "New Zealand has more sheep than people! For every person, there are about five sheep. Baa!", flagEmoji: "🇳🇿", continent: "Oceania" }
 };
 
 const nameToId = {
@@ -53,6 +53,10 @@ function App() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [celebrationMessage, setCelebrationMessage] = useState("");
   const [mapResetKey, setMapResetKey] = useState(0);
+  const [showMathGate, setShowMathGate] = useState(false);
+  const [mathQuestion, setMathQuestion] = useState({ text: "", answer: 0 });
+  const [mathAnswer, setMathAnswer] = useState("");
+  const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
   // Preload voices
@@ -165,9 +169,54 @@ function App() {
   };
 
   // ============================================
+  // MATH GATE FUNCTIONS
+  // ============================================
+  const generateMathQuestion = () => {
+    const operations = [
+      { type: '+', func: (a, b) => a + b },
+      { type: '-', func: (a, b) => a - b },
+      { type: '×', func: (a, b) => a * b }
+    ];
+    const op = operations[Math.floor(Math.random() * operations.length)];
+    let a, b;
+    if (op.type === '×') {
+      a = Math.floor(Math.random() * 9) + 1;
+      b = Math.floor(Math.random() * 9) + 1;
+    } else {
+      a = Math.floor(Math.random() * 20) + 1;
+      b = Math.floor(Math.random() * a) + 1;
+    }
+    const text = `${a} ${op.type} ${b} = ?`;
+    const answer = op.func(a, b);
+    setMathQuestion({ text, answer });
+  };
+
+  const checkMathGate = (action) => {
+    setPendingAction(action);
+    generateMathQuestion();
+    setShowMathGate(true);
+  };
+
+  const verifyMath = () => {
+    if (parseInt(mathAnswer) === mathQuestion.answer) {
+      setShowMathGate(false);
+      setMathAnswer("");
+      if (pendingAction === 'donate') {
+        window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank');
+      } else if (pendingAction === 'parents') {
+        setShowParentGate(true);
+      }
+      setPendingAction(null);
+    } else {
+      alert("Oops! That's not right. Ask a grown-up for help.");
+      generateMathQuestion();
+      setMathAnswer("");
+    }
+  };
+
+  // ============================================
   // AUDIO FUNCTIONS
   // ============================================
-
   const getLanguageCode = (language) => {
     const codes = {
       'Japanese': 'ja-JP', 'French': 'fr-FR', 'Portuguese': 'pt-BR',
@@ -200,7 +249,7 @@ function App() {
       return;
     }
     const helloToSay = country.helloPhonetic || country.hello;
-    const text = `${country.name}. The capital is ${country.capital}. ${country.name} has about ${country.population} people. The language is ${country.language}. To say hello, you say ${helloToSay}. The ${country.animal} lives here. People eat ${country.food}. Fun fact: ${country.funFact}.`;
+    const text = `${country.name}. The capital is ${country.capital}. ${country.name} has about ${country.population} people. The language is ${country.language}. To say hello, you say ${helloToSay}. The ${country.animal} lives here. People eat ${country.food}. Did you know? ${country.funFact}`;
     const u = new SpeechSynthesisUtterance(text);
     u.rate = 0.9; u.pitch = 1.0;
     selectBestVoice(u);
@@ -245,7 +294,7 @@ function App() {
     return (
       <div className="intro-overlay">
         <div className="intro-card">
-          <div className="intro-logo">🐼🐼</div>
+          <img src="/logo.png" alt="Penny & Peter Panda" className="intro-logo" />
           <h1 className="intro-title">My Big World</h1>
           <p className="intro-subtitle">with Penny and Peter Panda</p>
           <div className="intro-message">
@@ -296,9 +345,32 @@ function App() {
         </div>
       )}
 
+      {showMathGate && (
+        <div className="modal-overlay">
+          <div className="modal math-modal">
+            <button className="modal-close" onClick={() => setShowMathGate(false)}>✕</button>
+            <div className="math-icon">🔒</div>
+            <h3>Are you a grown-up?</h3>
+            <p className="math-question">{mathQuestion.text}</p>
+            <input
+              type="number"
+              className="math-input"
+              value={mathAnswer}
+              onChange={(e) => setMathAnswer(e.target.value)}
+              placeholder="Enter your answer"
+              onKeyPress={(e) => e.key === 'Enter' && verifyMath()}
+              autoFocus
+            />
+            <button className="math-verify-btn" onClick={verifyMath}>Verify</button>
+            <p className="math-note">This helps us make sure only grown-ups donate.</p>
+            <p className="math-note">If you can't donate, that's okay. My Big World is free forever.</p>
+          </div>
+        </div>
+      )}
+
       <header className="header">
         <div className="logo-area">
-          <span className="panda-icon">🐼🐼</span>
+          <img src="/logo-small.png" alt="Penny & Peter Panda" className="app-logo" />
           <div>
             <h1>My Big World</h1>
             <p className="subtitle">with Penny and Peter Panda</p>
@@ -398,20 +470,22 @@ function App() {
       </div>
 
       <footer className="footer">
-        <div className="footer-message">
-          <span className="footer-pandas">🐼🐼</span>
-          <span className="footer-text">My Big World — Ad-free. Forever.</span>
+        <div className="footer-pandas">🐼🐼</div>
+        <div className="footer-message">My Big World — Ad-free. Forever.</div>
+        
+        <div className="donate-message">
+          💝 Donate if you can. No problem if you can't.<br />
+          My Big World stays free and ad-free either way.
         </div>
-        <div className="donate-row">
-          <span className="donate-text">💝 Donate to keep this app ad-free</span>
-          <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
-            Donate Now
-          </button>
-        </div>
+        
+        <button className="donate-footer-btn" onClick={() => checkMathGate('donate')}>
+          Donate Now
+        </button>
+        
         <div className="footer-links">
           <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
           <span className="separator">|</span>
-          <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
+          <button className="about-btn" onClick={() => checkMathGate('parents')}>🔒 Parents</button>
         </div>
       </footer>
 
@@ -421,6 +495,7 @@ function App() {
             <button className="modal-close" onClick={() => setShowParentGate(false)}>✕</button>
             <div className="parent-header">🔒 PARENTS & TEACHERS</div>
             {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
+            <p className="no-pressure-message">There's no pressure to donate. My Big World is free and ad-free for every family, no matter what.</p>
             <div className="donation-section">
               <form action="https://www.paypal.com/donate" method="post" target="_top">
                 <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
@@ -446,7 +521,7 @@ function App() {
         <div className="modal-overlay">
           <div className="modal about-modal">
             <button className="modal-close" onClick={() => setShowAbout(false)}>✕</button>
-            <div className="about-header"><span className="about-icon">🐼🐼</span><h2>My Big World</h2><p className="version">Version 1.0 — 2026</p></div>
+            <div className="about-header"><img src="/logo-small.png" alt="Logo" className="about-logo" /><h2>My Big World</h2><p className="version">Version 1.0 — 2026</p></div>
             <div className="about-section"><h3>📧 Contact</h3><p><a href="mailto:info@mybigworld.online">info@mybigworld.online</a></p></div>
             <div className="about-section"><h3>🔒 Privacy</h3><ul><li>✓ No personal data collected (guest mode)</li><li>✓ Google sign-in optional</li><li>✓ No tracking or cookies</li><li>✓ No ads ever</li></ul></div>
             <div className="about-section"><h3>📜 Terms</h3><ul><li>✓ Free for personal and classroom use</li><li>✓ May not be sold or redistributed</li><li>✓ Content for educational purposes only</li></ul></div>
@@ -484,7 +559,7 @@ function App() {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .intro-logo { font-size: 4.5rem; margin-bottom: 0.5rem; }
+        .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
         .intro-title { font-size: 2rem; color: #1e6f5c; margin: 0; font-weight: 800; }
         .intro-subtitle { font-size: 0.9rem; color: #666; margin-top: 0.25rem; margin-bottom: 1.5rem; }
         .intro-message { background: #f5f7fa; padding: 1rem; border-radius: 24px; margin: 1rem 0; }
@@ -506,7 +581,7 @@ function App() {
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .header { text-align: center; padding: 1rem; background: #1e6f5c; color: white; border-radius: 32px; margin-bottom: 2rem; }
         .logo-area { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.25rem; }
-        .panda-icon { font-size: 2rem; }
+        .app-logo { width: 50px; height: 50px; object-fit: contain; }
         .header h1 { margin: 0; font-size: 1.8rem; }
         .subtitle { font-size: 0.8rem; opacity: 0.9; }
         .tagline { font-size: 0.8rem; opacity: 0.8; margin-top: 0.5rem; }
@@ -547,17 +622,28 @@ function App() {
         .stamp-flag { font-size: 1.3rem; }
         .stamp-name { font-size: 0.7rem; }
         .stamp-count { text-align: center; margin-top: 0.75rem; font-weight: bold; color: #1e6f5c; }
+        
+        /* Footer Styles */
         .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
-        .footer-message { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
-        .footer-pandas { font-size: 1.2rem; }
-        .footer-text { font-size: 0.8rem; color: #1e6f5c; font-weight: bold; }
-        .donate-row { display: flex; justify-content: center; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem; padding: 0.5rem 0.75rem; background: #f0f7f4; border-radius: 60px; }
-        .donate-text { font-size: 0.75rem; color: #1e6f5c; font-weight: 600; }
-        .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.4rem 1rem; border-radius: 60px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
+        .footer-pandas { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .footer-message { font-size: 0.85rem; font-weight: bold; color: #1e6f5c; margin-bottom: 0.5rem; }
+        .donate-message { font-size: 0.7rem; color: #555; margin-bottom: 0.75rem; line-height: 1.4; }
+        .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 60px; font-size: 0.8rem; cursor: pointer; font-weight: bold; margin-bottom: 0.75rem; }
         .donate-footer-btn:hover { background: #005c99; }
-        .footer-links { display: flex; justify-content: center; gap: 1rem; margin: 0.5rem 0; }
+        .footer-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem; }
         .about-btn { background: none; border: none; color: #1e6f5c; font-size: 0.7rem; cursor: pointer; text-decoration: underline; }
         .separator { color: #ccc; }
+
+        /* Math Gate Modal */
+        .math-modal { text-align: center; max-width: 350px; }
+        .math-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .math-question { font-size: 1.8rem; font-weight: bold; color: #1e6f5c; margin: 1rem 0; }
+        .math-input { font-size: 1.2rem; padding: 0.5rem; text-align: center; width: 150px; margin: 0.5rem auto; display: block; border: 2px solid #ddd; border-radius: 12px; }
+        .math-verify-btn { background: #1e6f5c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 60px; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; }
+        .math-note { font-size: 0.7rem; color: #999; margin-top: 0.5rem; }
+        .no-pressure-message { font-size: 0.75rem; color: #1e6f5c; background: #f0f7f4; padding: 0.5rem; border-radius: 12px; margin-bottom: 1rem; text-align: center; }
+
+        /* Modal & Celebration Styles */
         .celebration-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; }
         .celebration-content { text-align: center; background: linear-gradient(135deg, #ffd966, #ff9800); padding: 2rem; border-radius: 48px; }
         .celebration-badge { font-size: 1.5rem; font-weight: bold; color: #1e6f5c; background: white; padding: 0.75rem 1.5rem; border-radius: 60px; margin-bottom: 0.75rem; }
@@ -583,6 +669,7 @@ function App() {
         .reset-confirm { padding: 0.5rem 1rem; background: #1e6f5c; color: white; border: none; border-radius: 60px; cursor: pointer; }
         .about-modal { max-width: 500px; }
         .about-header { text-align: center; margin-bottom: 1rem; }
+        .about-logo { width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; }
         .about-icon { font-size: 3rem; }
         .version { color: #999; font-size: 0.8rem; }
         .about-section { text-align: left; margin: 1rem 0; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
@@ -590,7 +677,14 @@ function App() {
         .about-section ul { margin-left: 1rem; font-size: 0.85rem; }
         .about-footer { text-align: center; margin-top: 1rem; font-size: 0.7rem; color: #999; }
         .close-btn-large { background: #1e6f5c; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 60px; cursor: pointer; width: 100%; margin-top: 1rem; }
-        @media (max-width: 768px) { .main-container { flex-direction: column; } .right-panel { max-width: 100%; } .header h1 { font-size: 1.3rem; } }
+        
+        @media (max-width: 768px) { 
+          .main-container { flex-direction: column; } 
+          .right-panel { max-width: 100%; } 
+          .header h1 { font-size: 1.3rem; } 
+          .app-logo { width: 40px; height: 40px; }
+          .intro-logo { width: 80px; height: 80px; }
+        }
       `}</style>
     </div>
   );

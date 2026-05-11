@@ -558,9 +558,11 @@ function App() {
         .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
         .intro-title { font-size: 2rem; color: #ffffff; margin: 0; font-weight: 800; }
         .intro-subtitle { font-size: 0.9rem; color: #ffffff; margin-top: 0.25rem; margin-bottom: 1.5rem; }
-        .intro-message { background: #ffffff; padding: 1rem; border-radius: 24px; margin: 1rem 0; }
-        .intro-message p { margin: 0.5rem 0; color: #ffffff; }
-        .intro-message p:first-child { font-weight: bold; color: #ffffff; }
+        .intro-message p {
+  margin: 0.5rem 0;
+  color: white;  /* ← Change this from dark to white */
+  font-size: 0.95rem;
+}
         .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
         .intro-btn { padding: 0.85rem; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: transform 0.2s; }
         .intro-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }

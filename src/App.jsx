@@ -580,7 +580,11 @@ function App() {
   color: rgba(255, 255, 255, 0.7);  /* white with opacity */
   margin: 0;
 }
-
+.intro-card p,
+.intro-card .intro-note,
+.intro-card .intro-note-small {
+  color: white !important;
+}
         * { margin: 0; padding: 0; box-sizing: border-box; }
         .app { font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1400px; margin: 0 auto; padding: 1rem; background: #0d2b4e; min-height: 100vh; }
         .loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #0d2b4e; color: white; }

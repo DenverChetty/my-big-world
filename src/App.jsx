@@ -405,7 +405,7 @@ function App() {
       )}
 
      <header className="header">
-  <img src="/logo.png" alt="Penny & Peter Panda" className="header-logo" />
+  <img src="/headerlogo.png" alt="Penny & Peter Panda" className="header-logo" />
 </header>
 
       <div className="main-container">

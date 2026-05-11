@@ -291,32 +291,33 @@ function App() {
   }
 
   if (showIntro) {
-    return (
-      <div className="intro-overlay">
-        <div className="intro-card">
-          <img src="/logo.png" alt="Penny & Peter Panda" className="intro-logo" />
-          <h1 className="intro-title">My Big World</h1>
-          <p className="intro-subtitle">with Penny and Peter Panda</p>
-          <div className="intro-message">
-            <p>✨ Hi! We're Penny and Peter! ✨</p>
-            <p>We explore countries, collect stamps, and learn new languages!</p>
-            <p><strong>Want to come with us?</strong></p>
-          </div>
-          <div className="intro-buttons">
-            <button className="intro-btn google-btn" onClick={handleGoogleSignIn}>
-              <span className="google-icon">G</span>
-              Sign in with Google
-            </button>
-            <button className="intro-btn guest-btn" onClick={() => setShowIntro(false)}>
-              Continue as Guest
-            </button>
-          </div>
-          <p className="intro-note">🔐 Sign in to save your stamps on any device</p>
-          <p className="intro-note-small">Guest mode saves progress on this device only</p>
+  return (
+    <div className="intro-overlay">
+      <div className="intro-card">
+        <img src="/logo.png" alt="Penny & Peter Panda" className="intro-logo" />
+        
+        <div className="intro-message">
+          <p>✨ Hi! We're Penny and Peter! ✨</p>
+          <p>We explore countries, collect stamps, and learn new languages!</p>
+          <p><strong>Want to come with us?</strong></p>
         </div>
+        
+        <div className="intro-buttons">
+          <button className="intro-btn google-btn" onClick={handleGoogleSignIn}>
+            <span className="google-icon">G</span>
+            Sign in with Google
+          </button>
+          <button className="intro-btn guest-btn" onClick={() => setShowIntro(false)}>
+            Continue as Guest
+          </button>
+        </div>
+        
+        <p className="intro-note">🔐 Sign in to save your stamps on any device</p>
+        <p className="intro-note-small">Guest mode saves progress on this device only</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="app">
@@ -555,11 +556,11 @@ function App() {
           to { opacity: 1; transform: translateY(0); }
         }
         .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
-        .intro-title { font-size: 2rem; color: #1e6f5c; margin: 0; font-weight: 800; }
-        .intro-subtitle { font-size: 0.9rem; color: #666; margin-top: 0.25rem; margin-bottom: 1.5rem; }
-        .intro-message { background: #f5f7fa; padding: 1rem; border-radius: 24px; margin: 1rem 0; }
-        .intro-message p { margin: 0.5rem 0; color: #333; }
-        .intro-message p:first-child { font-weight: bold; color: #1e6f5c; }
+        .intro-title { font-size: 2rem; color: #ffffff; margin: 0; font-weight: 800; }
+        .intro-subtitle { font-size: 0.9rem; color: #ffffff; margin-top: 0.25rem; margin-bottom: 1.5rem; }
+        .intro-message { background: #ffffff; padding: 1rem; border-radius: 24px; margin: 1rem 0; }
+        .intro-message p { margin: 0.5rem 0; color: #ffffff; }
+        .intro-message p:first-child { font-weight: bold; color: #ffffff; }
         .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
         .intro-btn { padding: 0.85rem; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: transform 0.2s; }
         .intro-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }

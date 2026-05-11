@@ -197,36 +197,36 @@ function App() {
 
   // Helper function to select best voice
   const selectBestVoice = (utterance) => {
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoices = [
-      'Google UK English Female',
-      'Google US English Female',
-      'Microsoft Susan',
-      'Microsoft Zira',
-      'Samantha',
-      'Karen'
-    ];
-    for (const preferred of preferredVoices) {
-      const voice = voices.find(v => v.name?.includes(preferred));
-      if (voice) {
-        utterance.voice = voice;
-        return;
-      }
+  const voices = window.speechSynthesis.getVoices();
+  const preferredVoices = [
+    'Google UK English Female',
+    'Google US English Female',
+    'Microsoft Jenny',     // Very warm
+    'Microsoft Susan',     // Good for kids
+    'Samantha',            // Apple's warm voice
+    'Microsoft Zira'
+  ];
+  for (const preferred of preferredVoices) {
+    const voice = voices.find(v => v.name?.includes(preferred));
+    if (voice) {
+      utterance.voice = voice;
+      return;
     }
-    const femaleVoice = voices.find(v =>
-      v.lang?.startsWith('en') &&
-      (v.name?.includes('Female') || v.name === 'Samantha' || v.name === 'Karen')
-    );
-    if (femaleVoice) utterance.voice = femaleVoice;
-  };
+  }
+  const femaleVoice = voices.find(v =>
+    v.lang?.startsWith('en') &&
+    (v.name?.includes('Female') || v.name === 'Samantha')
+  );
+  if (femaleVoice) utterance.voice = femaleVoice;
+};
 
   const speakCountryInfo = (country) => {
   window.speechSynthesis.cancel();
   
   if (country.id === "unknown") {
-    const utterance = new SpeechSynthesisUtterance(`Wow! ${country.name} is coming soon! We're adding facts for every country. Check back later!`);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.8;  // Higher = more child-like
+    const utterance = new SpeechSynthesisUtterance(`Ooh, ${country.name} is coming soon! We're adding new countries all the time. Check back later!`);
+    utterance.rate = 0.85;
+    utterance.pitch = 1.1;
     selectBestVoice(utterance);
     window.speechSynthesis.speak(utterance);
     return;
@@ -235,29 +235,29 @@ function App() {
   const helloToSay = country.helloPhonetic || country.hello;
   const languageCode = getLanguageCode(country.language);
   
-  // More excited, child-friendly sentences
+  // Ms. Rachel style — warm, engaging, with pauses for repetition
   const sentences = [
-    `Yay! Let's explore ${country.name}!`,
-    `The capital city is ${country.capital}!`,
-    `${country.name} has about ${country.population} people. Wow!`,
-    `People speak ${country.language} here. Cool!`,
+    `Let's visit ${country.name}!`,
+    `The capital city is ${country.capital}. Can you say ${country.capital}?`,
+    `Wow! About ${country.population} people live in ${country.name}. That's so many!`,
+    `People here speak ${country.language}. That's a beautiful language.`,
   ];
   
   let index = 0;
   
   const speakNext = () => {
     if (index >= sentences.length) {
-      const helloUtterance = new SpeechSynthesisUtterance(`To say hello, you say... ${helloToSay}! Can you try it? ${helloToSay}!`);
-      helloUtterance.rate = 0.9;
-      helloUtterance.pitch = 1.8;
+      const helloUtterance = new SpeechSynthesisUtterance(`To say hello in ${country.language}, you say... ${helloToSay}. Can you try it? ${helloToSay}! Good job!`);
+      helloUtterance.rate = 0.8;
+      helloUtterance.pitch = 1.15;
       helloUtterance.lang = languageCode;
       selectBestVoice(helloUtterance);
       window.speechSynthesis.speak(helloUtterance);
       
       helloUtterance.onend = () => {
-        const factUtterance = new SpeechSynthesisUtterance(`Guess what! ${country.name} is famous for the ${country.animal}! ${country.animalEmoji} And their food? ${country.food} is delicious! ${country.foodEmoji} Here's a super fun fact: ${country.funFact}`);
-        factUtterance.rate = 0.9;
-        factUtterance.pitch = 1.8;
+        const factUtterance = new SpeechSynthesisUtterance(`Here's something fun! ${country.name} is famous for ${country.animal}. ${country.animalEmoji} And their food? ${country.food} is so yummy! ${country.foodEmoji} One more fun fact: ${country.funFact}. You're such a great explorer!`);
+        factUtterance.rate = 0.85;
+        factUtterance.pitch = 1.15;
         selectBestVoice(factUtterance);
         window.speechSynthesis.speak(factUtterance);
       };
@@ -265,13 +265,13 @@ function App() {
     }
     
     const utterance = new SpeechSynthesisUtterance(sentences[index]);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.8;
+    utterance.rate = 0.85;
+    utterance.pitch = 1.15;
     selectBestVoice(utterance);
     
     utterance.onend = () => {
       index++;
-      setTimeout(speakNext, 250);
+      setTimeout(speakNext, 400);
     };
     
     window.speechSynthesis.speak(utterance);

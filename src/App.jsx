@@ -221,64 +221,64 @@ function App() {
   };
 
   const speakCountryInfo = (country) => {
-    window.speechSynthesis.cancel();
-    
-    if (country.id === "unknown") {
-      const utterance = new SpeechSynthesisUtterance(`${country.name} is coming soon! We're adding facts for every country.`);
-      utterance.rate = 0.85;
-      utterance.pitch = 1.1;
-      selectBestVoice(utterance);
-      window.speechSynthesis.speak(utterance);
+  window.speechSynthesis.cancel();
+  
+  if (country.id === "unknown") {
+    const utterance = new SpeechSynthesisUtterance(`Wow! ${country.name} is coming soon! We're adding facts for every country. Check back later!`);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.8;  // Higher = more child-like
+    selectBestVoice(utterance);
+    window.speechSynthesis.speak(utterance);
+    return;
+  }
+  
+  const helloToSay = country.helloPhonetic || country.hello;
+  const languageCode = getLanguageCode(country.language);
+  
+  // More excited, child-friendly sentences
+  const sentences = [
+    `Yay! Let's explore ${country.name}!`,
+    `The capital city is ${country.capital}!`,
+    `${country.name} has about ${country.population} people. Wow!`,
+    `People speak ${country.language} here. Cool!`,
+  ];
+  
+  let index = 0;
+  
+  const speakNext = () => {
+    if (index >= sentences.length) {
+      const helloUtterance = new SpeechSynthesisUtterance(`To say hello, you say... ${helloToSay}! Can you try it? ${helloToSay}!`);
+      helloUtterance.rate = 0.9;
+      helloUtterance.pitch = 1.8;
+      helloUtterance.lang = languageCode;
+      selectBestVoice(helloUtterance);
+      window.speechSynthesis.speak(helloUtterance);
+      
+      helloUtterance.onend = () => {
+        const factUtterance = new SpeechSynthesisUtterance(`Guess what! ${country.name} is famous for the ${country.animal}! ${country.animalEmoji} And their food? ${country.food} is delicious! ${country.foodEmoji} Here's a super fun fact: ${country.funFact}`);
+        factUtterance.rate = 0.9;
+        factUtterance.pitch = 1.8;
+        selectBestVoice(factUtterance);
+        window.speechSynthesis.speak(factUtterance);
+      };
       return;
     }
     
-    const helloToSay = country.helloPhonetic || country.hello;
-    const languageCode = getLanguageCode(country.language);
+    const utterance = new SpeechSynthesisUtterance(sentences[index]);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.8;
+    selectBestVoice(utterance);
     
-    const sentences = [
-      `Let's explore ${country.name}!`,
-      `The capital is ${country.capital}.`,
-      `${country.name} is home to about ${country.population} people.`,
-      `People speak ${country.language} here.`,
-    ];
-    
-    let index = 0;
-    
-    const speakNext = () => {
-      if (index >= sentences.length) {
-        const helloUtterance = new SpeechSynthesisUtterance(`To say hello, you say... ${helloToSay}!`);
-        helloUtterance.rate = 0.8;
-        helloUtterance.pitch = 1.15;
-        helloUtterance.lang = languageCode;
-        selectBestVoice(helloUtterance);
-        window.speechSynthesis.speak(helloUtterance);
-        
-        helloUtterance.onend = () => {
-          const factUtterance = new SpeechSynthesisUtterance(`${country.name} is famous for the ${country.animal}. Their famous food is ${country.food}. Here's a fun fact: ${country.funFact}`);
-          factUtterance.rate = 0.85;
-          factUtterance.pitch = 1.15;
-          selectBestVoice(factUtterance);
-          window.speechSynthesis.speak(factUtterance);
-        };
-        return;
-      }
-      
-      const utterance = new SpeechSynthesisUtterance(sentences[index]);
-      utterance.rate = 0.85;
-      utterance.pitch = 1.15;
-      utterance.volume = 1;
-      selectBestVoice(utterance);
-      
-      utterance.onend = () => {
-        index++;
-        setTimeout(speakNext, 300);
-      };
-      
-      window.speechSynthesis.speak(utterance);
+    utterance.onend = () => {
+      index++;
+      setTimeout(speakNext, 250);
     };
     
-    speakNext();
+    window.speechSynthesis.speak(utterance);
   };
+  
+  speakNext();
+};
 
   const stopSpeaking = () => {
     window.speechSynthesis.cancel();
@@ -475,52 +475,50 @@ function App() {
       </div>
 
       <footer className="footer">
-        <div className="footer-message">
-          <span className="footer-pandas">🐼🐼</span>
-          <span className="footer-text">My Big World — Ad-free. Forever.</span>
-        </div>
-        <div className="donate-row">
-          <span className="donate-text">💝 Donate to keep this app ad-free</span>
-          <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
-            Donate Now
-          </button>
-        </div>
-        <div className="footer-links">
-          <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
-          <span className="separator">|</span>
-          <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
-        </div>
-        <p className="footer-hint">👆 Hold here for 3 seconds (parent settings)</p>
-      </footer>
+  <div className="footer-message">
+    <span className="footer-pandas">🐼🐼</span>
+    <span className="footer-text">My Big World — Ad-free. Forever.</span>
+  </div>
+  <div className="donate-row">
+    <span className="donate-text">💝 Help keep My Big World free for every kid</span>
+    <button className="donate-footer-btn" onClick={() => window.open('https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y', '_blank')}>
+      Donate Now
+    </button>
+  </div>
+  <div className="footer-links">
+    <button className="about-btn" onClick={() => setShowAbout(true)}>ℹ️ About / Legal</button>
+    <button className="about-btn" onClick={() => setShowParentGate(true)}>🔒 Parents</button>
+  </div>
+</footer>
 
-      {showParentGate && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <button className="modal-close" onClick={() => setShowParentGate(false)}>✕</button>
-            <div className="parent-header">🔒 PARENTS & TEACHERS</div>
-            {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
-            <div className="donation-section">
-              <form action="https://www.paypal.com/donate" method="post" target="_top">
-                <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
-                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal" alt="Donate" className="donate-img" />
-                <img alt="" border="0" src="https://www.paypal.com/en_ZA/i/scr/pixel.gif" width="1" height="1" />
-              </form>
-              <p className="donate-note">Every child deserves to explore the world, no matter their family's budget. Your donation helps expand the map — more countries, more facts, more games. So donate if you can. Every little bit helps. If you can't, the map is still yours. Completely. Thank you for believing in free, ad-free learning. 🌍</p>
-            </div>
-            <hr />
-            <div className="premium-section">
-              <h4>⭐ Premium (Coming Soon)</h4>
-              <ul><li>✓ All 195 countries</li><li>✓ Deep facts & quizzes</li><li>✓ 1,000+ workbook pages</li><li>✓ Timed challenges</li><li>✓ Multiple profiles</li></ul>
-            </div>
-            <hr />
-            <div className="account-section">
-              <button className="signout-btn" onClick={handleSignOut}>🔑 Sign Out</button>
-              <button className="reset-progress-btn" onClick={resetAllProgress}>⚠️ Reset All Progress</button>
-            </div>
-            <div className="pin-section"><p className="pin-hint">🔒 Parent PIN: <strong>1234</strong></p></div>
-          </div>
-        </div>
-      )}
+     {showParentGate && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <button className="modal-close" onClick={() => setShowParentGate(false)}>✕</button>
+      <div className="parent-header">🔒 PARENTS & TEACHERS</div>
+      {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
+      
+      <div className="donation-section">
+        <form action="https://www.paypal.com/donate" method="post" target="_top">
+          <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
+          <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal" alt="Donate" />
+        </form>
+        <p className="donate-note">Thank you for keeping My Big World ad-free! 🌍</p>
+      </div>
+      
+      <hr />
+      <div className="premium-section">
+        <h4>⭐ Premium (Coming Soon)</h4>
+        <ul><li>✓ All 195 countries</li><li>✓ Deep facts & quizzes</li><li>✓ 1,000+ workbook pages</li><li>✓ Multiple profiles</li></ul>
+      </div>
+      <hr />
+      <div className="account-section">
+        <button className="signout-btn" onClick={handleSignOut}>🔑 Sign Out</button>
+        <button className="reset-progress-btn" onClick={resetAllProgress}>⚠️ Reset All Progress</button>
+      </div>
+    </div>
+  </div>
+)}
 
       {showAbout && (
         <div className="modal-overlay">

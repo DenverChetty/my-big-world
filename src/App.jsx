@@ -293,10 +293,21 @@ function App() {
   if (showIntro) {
   return (
     <div className="intro-overlay">
-      <div className="intro-card">
+      <div 
+        className="intro-card" 
+        style={{
+          background: 'rgba(0, 0, 0, 0.75)',
+          borderRadius: '48px',
+          padding: '2rem',
+          maxWidth: '420px',
+          width: '90%',
+          textAlign: 'center',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
+        }}
+      >
         <img src="/logo.png" alt="Penny & Peter Panda" className="intro-logo" />
         
-        <div className="intro-message">
+        <div className="intro-message" style={{ color: 'white' }}>
           <p>✨ Hi! We're Penny and Peter! ✨</p>
           <p>We explore countries, collect stamps, and learn new languages!</p>
           <p><strong>Want to come with us?</strong></p>
@@ -312,8 +323,12 @@ function App() {
           </button>
         </div>
         
-        <p className="intro-note">🔐 Sign in to save your stamps on any device</p>
-        <p className="intro-note-small">Guest mode saves progress on this device only</p>
+        <p className="intro-note" style={{ color: '#ffd966', margin: '0.5rem 0 0.25rem' }}>
+          🔐 Sign in to save your stamps on any device
+        </p>
+        <p className="intro-note-small" style={{ color: 'rgba(255,255,255,0.6)', margin: '0' }}>
+          Guest mode saves progress on this device only
+        </p>
       </div>
     </div>
   );

@@ -368,16 +368,10 @@ function App() {
         </div>
       )}
 
-      <header className="header">
-        <div className="logo-area">
-          <img src="/logo-small.png" alt="Penny & Peter Panda" className="app-logo" />
-          <div>
-            <h1>My Big World</h1>
-            <p className="subtitle">with Penny and Peter Panda</p>
-          </div>
-        </div>
-        <p className="tagline">Explore. Learn. Grow.</p>
-      </header>
+     <header className="header">
+  <img src="/logo.png" alt="Penny & Peter Panda" className="header-logo" />
+  <p className="tagline">Explore. Learn. Grow.</p>
+</header>
 
       <div className="main-container">
         <section className="map-section">
@@ -582,10 +576,28 @@ function App() {
         .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .header { text-align: center; padding: 1rem; background: #1e6f5c; color: white; border-radius: 32px; margin-bottom: 2rem; }
-        .logo-area { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.25rem; }
-        .app-logo { width: 50px; height: 50px; object-fit: contain; }
-        .header h1 { margin: 0; font-size: 1.8rem; }
-        .subtitle { font-size: 0.8rem; opacity: 0.9; }
+        .header {
+  text-align: center;
+  padding: 1rem;
+  background: #1e6f5c;
+  color: white;
+  border-radius: 32px;
+  margin-bottom: 2rem;
+}
+
+.header-logo {
+  width: 120px;
+  height: auto;
+  max-width: 80%;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin: 0;
+}
         .tagline { font-size: 0.8rem; opacity: 0.8; margin-top: 0.5rem; }
         .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
         .map-section { flex: 1.5; min-width: 0; }

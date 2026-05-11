@@ -294,7 +294,7 @@ function App() {
   return (
     <div className="intro-overlay">
       <div style={{ textAlign: 'center', padding: '2rem', width: '90%', maxWidth: '450px', margin: '0 auto' }}>
-        <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '180px', height: 'auto', marginBottom: '1.5rem' }} />
+        <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '300px', height: 'auto', marginBottom: '1.5rem' }} />
         
         <div style={{ color: 'white', marginBottom: '1.5rem' }}>
           <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>✨ Hi! We're Penny and Peter! ✨</p>

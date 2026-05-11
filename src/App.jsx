@@ -470,7 +470,9 @@ function App() {
       </div>
 
       <footer className="footer">
-        <div className="footer-pandas">🐼🐼</div>
+       <div className="footer-pandas">
+  <img src="/logo-small.png" alt="Penny & Peter Panda" className="footer-logo" />
+</div>
         <div className="footer-message">My Big World — Ad-free. Forever.</div>
         
         <div className="donate-message">
@@ -624,6 +626,11 @@ function App() {
         .stamp-count { text-align: center; margin-top: 0.75rem; font-weight: bold; color: #1e6f5c; }
         
         /* Footer Styles */
+        .footer-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
         .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
         .footer-pandas { font-size: 1.5rem; margin-bottom: 0.25rem; }
         .footer-message { font-size: 0.85rem; font-weight: bold; color: #1e6f5c; margin-bottom: 0.5rem; }

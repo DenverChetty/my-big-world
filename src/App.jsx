@@ -370,7 +370,6 @@ function App() {
 
      <header className="header">
   <img src="/logo.png" alt="Penny & Peter Panda" className="header-logo" />
-  <p className="tagline">Explore. Learn. Grow.</p>
 </header>
 
       <div className="main-container">
@@ -580,25 +579,16 @@ function App() {
   text-align: center;
   padding: 1rem;
   background: #1e6f5c;
-  color: white;
   border-radius: 32px;
   margin-bottom: 2rem;
 }
 
 .header-logo {
-  width: 120px;
+  width: 180px;
+  max-width: 90%;
   height: auto;
-  max-width: 80%;
   object-fit: contain;
-  margin-bottom: 0.5rem;
 }
-
-.tagline {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  margin: 0;
-}
-        .tagline { font-size: 0.8rem; opacity: 0.8; margin-top: 0.5rem; }
         .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
         .map-section { flex: 1.5; min-width: 0; }
         .right-panel { flex: 0.8; min-width: 280px; max-width: 380px; display: flex; flex-direction: column; gap: 1.5rem; }

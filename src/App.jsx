@@ -558,9 +558,9 @@ function App() {
         .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
         .intro-title { font-size: 2rem; color: #ffffff; margin: 0; font-weight: 800; }
         .intro-subtitle { font-size: 0.9rem; color: #ffffff; margin-top: 0.25rem; margin-bottom: 1.5rem; }
-        .intro-message p {
+       .intro-message p {
   margin: 0.5rem 0;
-  color: white;  /* ← Change this from dark to white */
+  color: white;  /* was dark, now white */
   font-size: 0.95rem;
 }
         .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
@@ -569,8 +569,17 @@ function App() {
         .google-btn { background: #4285f4; color: white; display: flex; align-items: center; justify-content: center; gap: 12px; }
         .google-icon { background: white; color: #4285f4; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
         .guest-btn { background: #f5f5f5; color: #555; border: 1px solid #ddd; }
-        .intro-note { font-size: 0.75rem; color: #1e6f5c; margin: 0.5rem 0 0.25rem; font-weight: 500; }
-        .intro-note-small { font-size: 0.7rem; color: #999; }
+        .intro-note {
+  font-size: 0.75rem;
+  color: white;  /* was dark, now white */
+  margin: 0.5rem 0 0.25rem;
+  font-weight: 500;
+}
+        .intro-note-small {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.7);  /* white with opacity */
+  margin: 0;
+}
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         .app { font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1400px; margin: 0 auto; padding: 1rem; background: #0d2b4e; min-height: 100vh; }

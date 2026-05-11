@@ -528,8 +528,8 @@ function App() {
         </div>
       )}
 
-     <style jsx>{`
-  /* ========== INTRO SCREEN STYLES ========== */
+    <style jsx>{`
+  /* INTRO SCREEN STYLES */
   .intro-overlay {
     position: fixed;
     top: 0;
@@ -626,155 +626,114 @@ function App() {
     margin: 0;
     text-align: center;
   }
-        .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
-        .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
-        .intro-btn { padding: 0.85rem; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: transform 0.2s; }
-        .intro-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .google-btn { background: #4285f4; color: white; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .google-icon { background: white; color: #4285f4; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
-        .guest-btn { background: #f5f5f5; color: #555; border: 1px solid #ddd; }
-        .intro-note {
-  font-size: 0.75rem;
-  color: white;  /* was dark, now white */
-  margin: 0.5rem 0 0.25rem;
-  font-weight: 500;
-}
-        .intro-note-small {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.7);  /* white with opacity */
-  margin: 0;
-}
-.intro-card p,
-.intro-card .intro-note,
-.intro-card .intro-note-small {
-  color: white !important;
-}
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        .app { font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1400px; margin: 0 auto; padding: 1rem; background: #0d2b4e; min-height: 100vh; }
-        .loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #0d2b4e; color: white; }
-        .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .header { text-align: center; padding: 1rem; background: #1e6f5c; color: white; border-radius: 32px; margin-bottom: 2rem; }
-        .header {
-  text-align: center;
-  padding: 1rem;
-  background: #1e6f5c;
-  border-radius: 32px;
-  margin-bottom: 2rem;
-}
 
-.header-logo {
-  width: 180px;
-  max-width: 90%;
-  height: auto;
-  object-fit: contain;
-}
-        .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .map-section { flex: 1.5; min-width: 0; }
-        .right-panel { flex: 0.8; min-width: 280px; max-width: 380px; display: flex; flex-direction: column; gap: 1.5rem; }
-        .map-container { background: #0d2b4e; border-radius: 24px; padding: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding: 0 0.5rem; }
-        .map-title { color: white; font-weight: bold; }
-        .map-reset-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
-        .map-legend { display: flex; justify-content: center; gap: 1rem; margin-top: 0.75rem; padding: 0.5rem; background: rgba(0,0,0,0.4); border-radius: 20px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; color: white; }
-        .legend-color { width: 16px; height: 16px; border-radius: 4px; border: 1px solid white; }
-        .legend-color.green { background: #4caf50; }
-        .legend-color.orange { background: #ff9800; }
-        .legend-color.gray { background: #d3d3d3; }
-        .info-card { background: white; border-radius: 24px; padding: 1.25rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .info-card.empty { background: #f9f9f9; text-align: center; }
-        .empty-state { padding: 1.5rem 1rem; }
-        .empty-emoji { font-size: 3rem; display: block; margin-bottom: 0.75rem; }
-        .card-header { display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
-        .card-flag { font-size: 2.5rem; }
-        .card-header h2 { flex: 1; color: #1e6f5c; font-size: 1.3rem; }
-        .audio-buttons { display: flex; gap: 0.5rem; }
-        .play-btn, .stop-btn { border: none; padding: 0.5rem 0.8rem; border-radius: 60px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
-        .play-btn { background: #4caf50; }
-        .play-btn:hover { background: #45a049; transform: scale(1.05); }
-        .stop-btn { background: #f44336; }
-        .stop-btn:hover { background: #d32f2f; transform: scale(1.05); }
-        .card-details p { margin: 0.6rem 0; font-size: 0.85rem; }
-        .stamp-shelf { background: white; border-radius: 24px; padding: 1.25rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .stamp-header h3 { text-align: center; margin-bottom: 0.75rem; color: #1e6f5c; }
-        .tier-badge { text-align: center; padding: 0.5rem; background: #ffd966; border-radius: 40px; margin-bottom: 1rem; font-weight: bold; }
-        .stamps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; max-height: 300px; overflow-y: auto; }
-        .stamp { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #f9f9f9; border-radius: 12px; }
-        .stamp.collected { background: #e8f5e9; border: 1px solid #4caf50; }
-        .stamp.empty { opacity: 0.5; }
-        .stamp-flag { font-size: 1.3rem; }
-        .stamp-name { font-size: 0.7rem; }
-        .stamp-count { text-align: center; margin-top: 0.75rem; font-weight: bold; color: #1e6f5c; }
-        
-        /* Footer Styles */
-        .footer-logo {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-}
-        .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
-        .footer-pandas { font-size: 1.5rem; margin-bottom: 0.25rem; }
-        .footer-message { font-size: 0.85rem; font-weight: bold; color: #1e6f5c; margin-bottom: 0.5rem; }
-        .donate-message { font-size: 0.7rem; color: #555; margin-bottom: 0.75rem; line-height: 1.4; }
-        .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 60px; font-size: 0.8rem; cursor: pointer; font-weight: bold; margin-bottom: 0.75rem; }
-        .donate-footer-btn:hover { background: #005c99; }
-        .footer-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem; }
-        .about-btn { background: none; border: none; color: #1e6f5c; font-size: 0.7rem; cursor: pointer; text-decoration: underline; }
-        .separator { color: #ccc; }
+  /* MAIN APP STYLES */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .app { font-family: 'Nunito', sans-serif; max-width: 1400px; margin: 0 auto; padding: 1rem; background: #0d2b4e; min-height: 100vh; }
+  .loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #0d2b4e; color: white; }
+  .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+  .header { text-align: center; padding: 1rem; background: #1e6f5c; border-radius: 32px; margin-bottom: 2rem; }
+  .header-logo { width: 180px; max-width: 90%; height: auto; object-fit: contain; }
+  .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .map-section { flex: 1.5; min-width: 0; }
+  .right-panel { flex: 0.8; min-width: 280px; max-width: 380px; display: flex; flex-direction: column; gap: 1.5rem; }
+  .map-container { background: #0d2b4e; border-radius: 24px; padding: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+  .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding: 0 0.5rem; }
+  .map-title { color: white; font-weight: bold; }
+  .map-reset-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+  .map-legend { display: flex; justify-content: center; gap: 1rem; margin-top: 0.75rem; padding: 0.5rem; background: rgba(0,0,0,0.4); border-radius: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; color: white; }
+  .legend-color { width: 16px; height: 16px; border-radius: 4px; border: 1px solid white; }
+  .legend-color.green { background: #4caf50; }
+  .legend-color.orange { background: #ff9800; }
+  .legend-color.gray { background: #d3d3d3; }
+  .info-card { background: white; border-radius: 24px; padding: 1.25rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+  .info-card.empty { background: #f9f9f9; text-align: center; }
+  .empty-state { padding: 1.5rem 1rem; }
+  .empty-emoji { font-size: 3rem; display: block; margin-bottom: 0.75rem; }
+  .card-header { display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
+  .card-flag { font-size: 2.5rem; }
+  .card-header h2 { flex: 1; color: #1e6f5c; font-size: 1.3rem; }
+  .audio-buttons { display: flex; gap: 0.5rem; }
+  .play-btn, .stop-btn { border: none; padding: 0.5rem 0.8rem; border-radius: 60px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+  .play-btn { background: #4caf50; }
+  .play-btn:hover { background: #45a049; transform: scale(1.05); }
+  .stop-btn { background: #f44336; }
+  .stop-btn:hover { background: #d32f2f; transform: scale(1.05); }
+  .card-details p { margin: 0.6rem 0; font-size: 0.85rem; }
+  .stamp-shelf { background: white; border-radius: 24px; padding: 1.25rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+  .stamp-header h3 { text-align: center; margin-bottom: 0.75rem; color: #1e6f5c; }
+  .tier-badge { text-align: center; padding: 0.5rem; background: #ffd966; border-radius: 40px; margin-bottom: 1rem; font-weight: bold; }
+  .stamps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; max-height: 300px; overflow-y: auto; }
+  .stamp { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #f9f9f9; border-radius: 12px; }
+  .stamp.collected { background: #e8f5e9; border: 1px solid #4caf50; }
+  .stamp.empty { opacity: 0.5; }
+  .stamp-flag { font-size: 1.3rem; }
+  .stamp-name { font-size: 0.7rem; }
+  .stamp-count { text-align: center; margin-top: 0.75rem; font-weight: bold; color: #1e6f5c; }
+  
+  /* Footer */
+  .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
+  .footer-logo { width: 40px; height: 40px; object-fit: contain; margin-bottom: 0.25rem; }
+  .footer-message { font-size: 0.85rem; font-weight: bold; color: #1e6f5c; margin-bottom: 0.5rem; }
+  .donate-message { font-size: 0.7rem; color: #555; margin-bottom: 0.75rem; line-height: 1.4; }
+  .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 60px; font-size: 0.8rem; cursor: pointer; font-weight: bold; margin-bottom: 0.75rem; }
+  .donate-footer-btn:hover { background: #005c99; }
+  .footer-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem; }
+  .about-btn { background: none; border: none; color: #1e6f5c; font-size: 0.7rem; cursor: pointer; text-decoration: underline; }
+  .separator { color: #ccc; }
 
-        /* Math Gate Modal */
-        .math-modal { text-align: center; max-width: 350px; }
-        .math-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-        .math-question { font-size: 1.8rem; font-weight: bold; color: #1e6f5c; margin: 1rem 0; }
-        .math-input { font-size: 1.2rem; padding: 0.5rem; text-align: center; width: 150px; margin: 0.5rem auto; display: block; border: 2px solid #ddd; border-radius: 12px; }
-        .math-verify-btn { background: #1e6f5c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 60px; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; }
-        .math-note { font-size: 0.7rem; color: #999; margin-top: 0.5rem; }
-        .no-pressure-message { font-size: 0.75rem; color: #1e6f5c; background: #f0f7f4; padding: 0.5rem; border-radius: 12px; margin-bottom: 1rem; text-align: center; }
+  /* Math Gate */
+  .math-modal { text-align: center; max-width: 350px; }
+  .math-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .math-question { font-size: 1.8rem; font-weight: bold; color: #1e6f5c; margin: 1rem 0; }
+  .math-input { font-size: 1.2rem; padding: 0.5rem; text-align: center; width: 150px; margin: 0.5rem auto; display: block; border: 2px solid #ddd; border-radius: 12px; }
+  .math-verify-btn { background: #1e6f5c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 60px; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; }
+  .math-note { font-size: 0.7rem; color: #999; margin-top: 0.5rem; }
+  .no-pressure-message { font-size: 0.75rem; color: #1e6f5c; background: #f0f7f4; padding: 0.5rem; border-radius: 12px; margin-bottom: 1rem; text-align: center; }
 
-        /* Modal & Celebration Styles */
-        .celebration-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-        .celebration-content { text-align: center; background: linear-gradient(135deg, #ffd966, #ff9800); padding: 2rem; border-radius: 48px; }
-        .celebration-badge { font-size: 1.5rem; font-weight: bold; color: #1e6f5c; background: white; padding: 0.75rem 1.5rem; border-radius: 60px; margin-bottom: 0.75rem; }
-        .celebration-btn { background: white; border: none; padding: 0.6rem 1.2rem; border-radius: 60px; cursor: pointer; }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1001; }
-        .modal { background: white; padding: 1.25rem; border-radius: 24px; max-width: 450px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
-        .parent-header { font-size: 1.3rem; font-weight: bold; color: #1e6f5c; margin-bottom: 1rem; text-align: center; }
-        .signed-in { text-align: center; font-size: 0.8rem; color: #555; margin-bottom: 1rem; }
-        .donation-section { text-align: center; margin: 1rem 0; }
-        .donate-img { max-width: 100%; height: auto; cursor: pointer; }
-        .donate-note { font-size: 0.75rem; color: #555; margin-top: 0.75rem; line-height: 1.4; }
-        .premium-section h4 { color: #1e6f5c; margin-bottom: 0.5rem; }
-        .premium-section ul { margin-left: 1rem; font-size: 0.8rem; color: #555; }
-        .account-section { display: flex; justify-content: center; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
-        .signout-btn, .reset-progress-btn { background: none; border: 1px solid #ccc; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; }
-        .reset-progress-btn { color: #c0392b; border-color: #c0392b; }
-        .reset-modal { max-width: 350px; text-align: center; }
-        .reset-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-        .reset-note { font-size: 0.75rem; color: #666; margin-top: 0.5rem; }
-        .reset-buttons { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
-        .reset-cancel { padding: 0.5rem 1rem; background: #ccc; border: none; border-radius: 60px; cursor: pointer; }
-        .reset-confirm { padding: 0.5rem 1rem; background: #1e6f5c; color: white; border: none; border-radius: 60px; cursor: pointer; }
-        .about-modal { max-width: 500px; }
-        .about-header { text-align: center; margin-bottom: 1rem; }
-        .about-logo { width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; }
-        .about-icon { font-size: 3rem; }
-        .version { color: #999; font-size: 0.8rem; }
-        .about-section { text-align: left; margin: 1rem 0; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
-        .about-section h3 { color: #1e6f5c; font-size: 1rem; }
-        .about-section ul { margin-left: 1rem; font-size: 0.85rem; }
-        .about-footer { text-align: center; margin-top: 1rem; font-size: 0.7rem; color: #999; }
-        .close-btn-large { background: #1e6f5c; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 60px; cursor: pointer; width: 100%; margin-top: 1rem; }
-        
-        @media (max-width: 768px) { 
-          .main-container { flex-direction: column; } 
-          .right-panel { max-width: 100%; } 
-          .header h1 { font-size: 1.3rem; } 
-          .app-logo { width: 40px; height: 40px; }
-          .intro-logo { width: 80px; height: 80px; }
-        }
-      `}</style>
+  /* Modal & Celebration */
+  .celebration-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+  .celebration-content { text-align: center; background: linear-gradient(135deg, #ffd966, #ff9800); padding: 2rem; border-radius: 48px; }
+  .celebration-badge { font-size: 1.5rem; font-weight: bold; color: #1e6f5c; background: white; padding: 0.75rem 1.5rem; border-radius: 60px; margin-bottom: 0.75rem; }
+  .celebration-btn { background: white; border: none; padding: 0.6rem 1.2rem; border-radius: 60px; cursor: pointer; }
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1001; }
+  .modal { background: white; padding: 1.25rem; border-radius: 24px; max-width: 450px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
+  .modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
+  .parent-header { font-size: 1.3rem; font-weight: bold; color: #1e6f5c; margin-bottom: 1rem; text-align: center; }
+  .signed-in { text-align: center; font-size: 0.8rem; color: #555; margin-bottom: 1rem; }
+  .donation-section { text-align: center; margin: 1rem 0; }
+  .donate-img { max-width: 100%; height: auto; cursor: pointer; }
+  .donate-note { font-size: 0.75rem; color: #555; margin-top: 0.75rem; line-height: 1.4; }
+  .premium-section h4 { color: #1e6f5c; margin-bottom: 0.5rem; }
+  .premium-section ul { margin-left: 1rem; font-size: 0.8rem; color: #555; }
+  .account-section { display: flex; justify-content: center; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
+  .signout-btn, .reset-progress-btn { background: none; border: 1px solid #ccc; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; }
+  .reset-progress-btn { color: #c0392b; border-color: #c0392b; }
+  .reset-modal { max-width: 350px; text-align: center; }
+  .reset-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .reset-note { font-size: 0.75rem; color: #666; margin-top: 0.5rem; }
+  .reset-buttons { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
+  .reset-cancel { padding: 0.5rem 1rem; background: #ccc; border: none; border-radius: 60px; cursor: pointer; }
+  .reset-confirm { padding: 0.5rem 1rem; background: #1e6f5c; color: white; border: none; border-radius: 60px; cursor: pointer; }
+  .about-modal { max-width: 500px; }
+  .about-header { text-align: center; margin-bottom: 1rem; }
+  .about-logo { width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; }
+  .version { color: #999; font-size: 0.8rem; }
+  .about-section { text-align: left; margin: 1rem 0; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+  .about-section h3 { color: #1e6f5c; font-size: 1rem; }
+  .about-section ul { margin-left: 1rem; font-size: 0.85rem; }
+  .about-footer { text-align: center; margin-top: 1rem; font-size: 0.7rem; color: #999; }
+  .close-btn-large { background: #1e6f5c; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 60px; cursor: pointer; width: 100%; margin-top: 1rem; }
+  
+  @media (max-width: 768px) { 
+    .main-container { flex-direction: column; } 
+    .right-panel { max-width: 100%; } 
+    .intro-logo { width: 80px; height: auto; }
+    .header-logo { width: 140px; }
+  }
+`}</style>
     </div>
   );
 }

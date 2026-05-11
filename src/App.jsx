@@ -293,40 +293,60 @@ function App() {
   if (showIntro) {
   return (
     <div className="intro-overlay">
-      <div 
-        className="intro-card" 
-        style={{
-          background: 'rgba(0, 0, 0, 0.75)',
-          borderRadius: '48px',
-          padding: '2rem',
-          maxWidth: '420px',
-          width: '90%',
-          textAlign: 'center',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
-        }}
-      >
-        <img src="/logo.png" alt="Penny & Peter Panda" className="intro-logo" />
+      <div style={{ textAlign: 'center', padding: '2rem', width: '90%', maxWidth: '450px', margin: '0 auto' }}>
+        <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '120px', height: 'auto', marginBottom: '1.5rem' }} />
         
-        <div className="intro-message" style={{ color: 'white' }}>
-          <p>✨ Hi! We're Penny and Peter! ✨</p>
-          <p>We explore countries, collect stamps, and learn new languages!</p>
-          <p><strong>Want to come with us?</strong></p>
+        <div style={{ color: 'white', marginBottom: '1.5rem' }}>
+          <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>✨ Hi! We're Penny and Peter! ✨</p>
+          <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>We explore countries, collect stamps, and learn new languages!</p>
+          <p style={{ margin: '0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>Want to come with us?</p>
         </div>
         
-        <div className="intro-buttons">
-          <button className="intro-btn google-btn" onClick={handleGoogleSignIn}>
-            <span className="google-icon">G</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <button 
+            onClick={handleGoogleSignIn}
+            style={{
+              background: '#4285f4',
+              color: 'white',
+              border: 'none',
+              padding: '0.85rem',
+              borderRadius: '60px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px'
+            }}
+          >
+            <span style={{ background: 'white', color: '#4285f4', width: '24px', height: '24px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>G</span>
             Sign in with Google
           </button>
-          <button className="intro-btn guest-btn" onClick={() => setShowIntro(false)}>
+          
+          <button 
+            onClick={() => setShowIntro(false)}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '1px solid rgba(255,255,255,0.3)',
+              padding: '0.85rem',
+              borderRadius: '60px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
             Continue as Guest
           </button>
         </div>
         
-        <p className="intro-note" style={{ color: '#ffd966', margin: '0.5rem 0 0.25rem' }}>
+        <p style={{ color: '#ffd966', fontSize: '0.75rem', margin: '0.5rem 0 0.25rem' }}>
           🔐 Sign in to save your stamps on any device
         </p>
-        <p className="intro-note-small" style={{ color: 'rgba(255,255,255,0.6)', margin: '0' }}>
+        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', margin: '0' }}>
           Guest mode saves progress on this device only
         </p>
       </div>

@@ -528,118 +528,104 @@ function App() {
         </div>
       )}
 
-      /* INTRO SCREEN STYLES */
-.intro-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #0d2b4e 0%, #1a4e6e 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-}
-
-.intro-card {
-  background: rgba(0, 0, 0, 0.75);
-  border-radius: 48px;
-  padding: 2rem;
-  max-width: 420px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
-
-.intro-logo {
-  width: 100px;
-  height: auto;
-  margin-bottom: 1rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.intro-message p {
-  margin: 0.75rem 0;
-  color: white;
-  font-size: 1rem;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.intro-message p:first-child {
-  font-weight: bold;
-  color: #ffd966;
-}
-
-.intro-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 1.5rem 0;
-}
-
-.intro-btn {
-  padding: 0.85rem;
-  border-radius: 60px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  width: 100%;
-  transition: transform 0.2s;
-  text-align: center;
-}
-
-.intro-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.google-btn {
-  background: #4285f4;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.google-icon {
-  background: white;
-  color: #4285f4;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.guest-btn {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.3);
-}
-
-.intro-note {
-  font-size: 0.75rem;
-  color: #ffd966;
-  margin: 0.5rem 0 0.25rem;
-  font-weight: 500;
-  text-align: center;
-}
-
-.intro-note-small {
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.6);
-  margin: 0;
-  text-align: center;
-}
+     <style jsx>{`
+  /* ========== INTRO SCREEN STYLES ========== */
+  .intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0d2b4e 0%, #1a4e6e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  }
+  .intro-card {
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 48px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .intro-logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .intro-message p {
+    margin: 0.75rem 0;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .intro-message p:first-child {
+    font-weight: bold;
+    color: #ffd966;
+  }
+  .intro-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .intro-btn {
+    padding: 0.85rem;
+    border-radius: 60px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    transition: transform 0.2s;
+  }
+  .intro-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .google-btn {
+    background: #4285f4;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .google-icon {
+    background: white;
+    color: #4285f4;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .guest-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .intro-note {
+    font-size: 0.75rem;
+    color: #ffd966;
+    margin: 0.5rem 0 0.25rem;
+    text-align: center;
+  }
+  .intro-note-small {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.6);
+    margin: 0;
+    text-align: center;
+  }
         .intro-logo { width: 100px; height: 100px; margin-bottom: 1rem; object-fit: contain; }
         .intro-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
         .intro-btn { padding: 0.85rem; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: transform 0.2s; }

@@ -710,7 +710,7 @@ function App() {
   
   /* Footer */
   .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
-  .footer-logo { width: 40px; height: 40px; object-fit: contain; margin-bottom: 0.25rem; }
+  .footer-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.25rem; }
   .footer-message { font-size: 0.85rem; font-weight: bold; color: #1e6f5c; margin-bottom: 0.5rem; }
   .donate-message { font-size: 0.7rem; color: #555; margin-bottom: 0.75rem; line-height: 1.4; }
   .donate-footer-btn { background: #0070ba; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 60px; font-size: 0.8rem; cursor: pointer; font-weight: bold; margin-bottom: 0.75rem; }

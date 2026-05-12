@@ -181,6 +181,15 @@ function App() {
     setStamps([]);
     setClickedCountries({});
   };
+  
+  const handleGoogleResponse = (response) => {
+  console.log("Google response:", response);
+  // You'll need to verify this on your backend
+};
+
+const handleSignOut = async () => {
+  // ... existing code ...
+};
 
   const handleCountryClick = (geo) => {
     const countryName = geo.properties?.name;
@@ -344,10 +353,7 @@ function App() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-         <SignIn onSignIn={(user) => {
-  setUser(user);
-  setShowIntro(false);
-}} />
+         
           
           <button 
             onClick={() => setShowIntro(false)}

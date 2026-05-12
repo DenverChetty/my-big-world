@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { auth, db, googleProvider, doc, getDoc, setDoc, updateDoc } from './firebase-config';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'firebase/auth';
 
 // ============================================
 // COUNTRY DATA (20 countries)
@@ -59,6 +59,15 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
+  useEffect(() => {
+  getRedirectResult(auth).then((result) => {
+    if (result) {
+      setUser(result.user);
+    }
+  }).catch((error) => {
+    console.error("Redirect sign in failed:", error);
+  });
+}, []);
   // Preload voices
   useEffect(() => {
     if ('speechSynthesis' in window) {
@@ -126,13 +135,12 @@ function App() {
   }, [stamps]);
 
   const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      setUser(result.user);
-    } catch (error) {
-      console.error("Google sign in failed:", error);
-    }
-  };
+  try {
+    await signInWithRedirect(auth, googleProvider);
+  } catch (error) {
+    console.error("Google sign in failed:", error);
+  }
+};
 
   const handleSignOut = async () => {
     await signOut(auth);

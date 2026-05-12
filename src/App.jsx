@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { auth, db, googleProvider, doc, getDoc, setDoc, updateDoc } from './firebase-config';
 import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
 
 
 // ============================================
@@ -148,6 +149,21 @@ function App() {
     }
   }, [stamps]);
 
+const handleGoogleCredential = (response) => {
+  console.log("Google credential received:", response);
+  // This sends the credential to Firebase
+  const credential = GoogleAuthProvider.credential(response.credential);
+  signInWithCredential(auth, credential)
+    .then((result) => {
+      console.log("Sign in successful:", result.user);
+      setUser(result.user);
+      setShowIntro(false);
+    })
+    .catch((error) => {
+      console.error("Sign in failed:", error);
+    });
+};
+  
  const handleGoogleSignIn = async () => {
   console.log("Sign in button clicked - starting redirect");
   try {
@@ -330,7 +346,22 @@ function App() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-         
+
+          <div
+  id="g_id_onload"
+  data-client_id="5932772531-tputkjip90d44tb5eqjjti2qkj23rr53.apps.googleusercontent.com"
+  data-callback="handleGoogleCredential"
+  data-auto_prompt="false"
+></div>
+<div
+  className="g_id_signin"
+  data-type="standard"
+  data-size="large"
+  data-theme="outline"
+  data-text="sign_in_with"
+  data-shape="rectangular"
+  data-logo_alignment="left"
+></div>
           
           <button 
             onClick={() => setShowIntro(false)}

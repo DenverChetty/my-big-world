@@ -1,3 +1,5 @@
+npm install @supabase/supabase-js
+
 {
   "name": "my-big-world",
   "version": "1.0.0",

@@ -61,15 +61,26 @@ function App() {
 
   // Handle redirect result FIRST (before other effects)
   useEffect(() => {
-    getRedirectResult(auth).then((result) => {
+  const handleRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
       if (result) {
         console.log("Redirect sign in successful:", result.user);
         setUser(result.user);
+        // Force a page reload to ensure everything initializes properly
+        window.location.reload();
       }
-    }).catch((error) => {
+    } catch (error) {
       console.error("Redirect sign in failed:", error);
-    });
-  }, []);
+      // If error is auth-related, try to clear and retry
+      if (error.code === 'auth/unauthorized-domain') {
+        console.error("Domain not authorized in Firebase. Add: " + window.location.origin);
+      }
+    }
+  };
+  
+  handleRedirectResult();
+}, []);
 
   // Preload voices
   useEffect(() => {

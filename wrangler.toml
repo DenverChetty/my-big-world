@@ -1,7 +1,0 @@
-name = "my-big-world"
-main = "worker.js"
-compatibility_date = "2024-01-01"
-
-[[routes]]
-pattern = "auth.mybigworld.online/__/auth/*"
-zone_name = "mybigworld.online"

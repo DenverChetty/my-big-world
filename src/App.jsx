@@ -59,6 +59,46 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
+  useEffect(() => {
+  // Wait for Google script to load
+  const loadGoogleButton = () => {
+    if (window.google && window.google.accounts) {
+      window.google.accounts.id.initialize({
+        client_id: "5932772531-tputkjip90d44tb5eqjjti2qkj23rr53.apps.googleusercontent.com",
+        callback: (response) => {
+          console.log("Google credential received:", response);
+          const credential = GoogleAuthProvider.credential(response.credential);
+          signInWithCredential(auth, credential)
+            .then((result) => {
+              console.log("Sign in successful:", result.user);
+              setUser(result.user);
+              setShowIntro(false);
+            })
+            .catch((error) => {
+              console.error("Sign in failed:", error);
+            });
+        },
+        auto_select: false
+      });
+      const buttonElement = document.getElementById("google-signin-button");
+      if (buttonElement) {
+        window.google.accounts.id.renderButton(buttonElement, {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          text: "sign_in_with",
+          shape: "rectangular",
+          logo_alignment: "left"
+        });
+      }
+    } else {
+      // Try again after short delay
+      setTimeout(loadGoogleButton, 100);
+    }
+  };
+  loadGoogleButton();
+}, []);
+  
   // Google One-Tap Sign-In callback
   useEffect(() => {
     window.handleGoogleCredential = (response) => {
@@ -317,63 +357,48 @@ function App() {
   }
 
   if (showIntro) {
-    return (
-      <div className="intro-overlay">
-        <div style={{ textAlign: 'center', padding: '2rem', width: '90%', maxWidth: '450px', margin: '0 auto' }}>
-          <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '300px', height: 'auto', marginBottom: '1.5rem' }} />
-          
-          <div style={{ color: 'white', marginBottom: '1.5rem' }}>
-            <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>✨ Hi! We're Penny and Peter! ✨</p>
-            <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>We explore countries, collect stamps, and learn new languages!</p>
-            <p style={{ margin: '0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>Want to come with us?</p>
-          </div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-            {/* Google One-Tap Sign-In Button */}
-            <div
-              id="g_id_onload"
-              data-client_id="5932772531-tputkjip90d44tb5eqjjti2qkj23rr53.apps.googleusercontent.com"
-              data-callback="handleGoogleCredential"
-              data-auto_prompt="false"
-            ></div>
-            <div
-              className="g_id_signin"
-              data-type="standard"
-              data-size="large"
-              data-theme="outline"
-              data-text="sign_in_with"
-              data-shape="rectangular"
-              data-logo_alignment="left"
-            ></div>
-            
-            <button 
-              onClick={() => setShowIntro(false)}
-              style={{
-                background: 'rgba(255,255,255,0.2)',
-                color: 'white',
-                border: '1px solid rgba(255,255,255,0.3)',
-                padding: '0.85rem',
-                borderRadius: '60px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                width: '100%'
-              }}
-            >
-              Continue as Guest
-            </button>
-          </div>
-          
-          <p style={{ color: '#ffd966', fontSize: '0.75rem', margin: '0.5rem 0 0.25rem' }}>
-            🔐 Sign in to save your stamps on any device
-          </p>
-          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', margin: '0' }}>
-            Guest mode saves progress on this device only
-          </p>
+  return (
+    <div className="intro-overlay">
+      <div style={{ textAlign: 'center', padding: '2rem', width: '90%', maxWidth: '450px', margin: '0 auto' }}>
+        <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '300px', height: 'auto', marginBottom: '1.5rem' }} />
+        
+        <div style={{ color: 'white', marginBottom: '1.5rem' }}>
+          <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>✨ Hi! We're Penny and Peter! ✨</p>
+          <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>We explore countries, collect stamps, and learn new languages!</p>
+          <p style={{ margin: '0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>Want to come with us?</p>
         </div>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <div id="google-signin-button"></div>
+          
+          <button 
+            onClick={() => setShowIntro(false)}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '1px solid rgba(255,255,255,0.3)',
+              padding: '0.85rem',
+              borderRadius: '60px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
+            Continue as Guest
+          </button>
+        </div>
+        
+        <p style={{ color: '#ffd966', fontSize: '0.75rem', margin: '0.5rem 0 0.25rem' }}>
+          🔐 Sign in to save your stamps on any device
+        </p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', margin: '0' }}>
+          Guest mode saves progress on this device only
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="app">

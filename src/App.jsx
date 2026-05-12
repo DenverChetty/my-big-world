@@ -370,7 +370,13 @@ function App() {
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <div id="google-signin-button"></div>
-          
+
+          // src/App.jsx
+import GoogleSignIn from './components/GoogleSignIn';
+
+// ... Inside your intro screen, where you want the button:
+<GoogleSignIn />
+
           <button 
             onClick={() => setShowIntro(false)}
             style={{

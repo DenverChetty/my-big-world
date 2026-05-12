@@ -65,17 +65,13 @@ function App() {
     try {
       const result = await getRedirectResult(auth);
       if (result) {
-        console.log("Redirect sign in successful:", result.user);
+        console.log("Sign in successful:", result.user);
         setUser(result.user);
-        // Force a page reload to ensure everything initializes properly
+        // Force reload to clear the redirect state
         window.location.reload();
       }
     } catch (error) {
       console.error("Redirect sign in failed:", error);
-      // If error is auth-related, try to clear and retry
-      if (error.code === 'auth/unauthorized-domain') {
-        console.error("Domain not authorized in Firebase. Add: " + window.location.origin);
-      }
     }
   };
   

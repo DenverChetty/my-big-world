@@ -1,5 +1,3 @@
-npm install @supabase/supabase-js
-
 {
   "name": "my-big-world",
   "version": "1.0.0",
@@ -14,8 +12,7 @@ npm install @supabase/supabase-js
   "react": "^19.0.0",
   "react-dom": "^19.0.0",
   "react-simple-maps": "^3.0.0",
-  "firebase": "^10.7.0",
-  "firebaseui": "^6.0.2"
+  "@supabase/supabase-js": "^2.39.0"
 },
   "devDependencies": {
   "@vitejs/plugin-react": "^5.0.0",

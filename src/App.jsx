@@ -575,20 +575,15 @@ function App() {
             <div className="parent-header">🔒 PARENTS & TEACHERS</div>
             {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
             <p className="no-pressure-message">There's no pressure to donate. My Big World is free and ad-free for every family, no matter what.</p>
-           <div className="donation-section">
-  <form action="https://www.paypal.com/donate" method="post" target="_top">
-    <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
-    <input 
-      type="image" 
-      src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
-      border="0" 
-      name="submit" 
-      title="PayPal - The safer, easier way to pay online!" 
-      alt="Donate with PayPal button" 
-      className="donate-img"
-    />
-    <img alt="" border="0" src="https://www.paypal.com/en_ZA/i/scr/pixel.gif" width="1" height="1" />
-  </form>
+          <div className="donation-section">
+  <a 
+    href="https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="donate-btn-fallback"
+  >
+    💝 Donate with PayPal
+  </a>
   <p className="donate-note">Thank you for keeping My Big World ad-free! 🌍</p>
 </div>
             <hr />
@@ -712,6 +707,16 @@ function App() {
         .parent-header { font-size: 1.3rem; font-weight: bold; color: #1e6f5c; margin-bottom: 1rem; text-align: center; }
         .signed-in { text-align: center; font-size: 0.8rem; color: #555; margin-bottom: 1rem; }
         .donation-section { text-align: center; margin: 1rem 0; }
+.donate-btn-fallback {
+  display: inline-block;
+  background: #0070ba;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 60px;
+  font-weight: bold;
+  margin: 10px 0;
+}
         .donate-img {
   max-width: 100%;
   height: auto;

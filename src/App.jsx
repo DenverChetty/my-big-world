@@ -12,7 +12,7 @@ const nameToId = {
   "Egypt": "egypt", "Canada": "canada", "India": "india", "Kenya": "kenya",
   "Italy": "italy", "Mexico": "mexico", "Germany": "germany", "Spain": "spain",
   "South Africa": "southafrica", "Argentina": "argentina", "China": "china",
-  "Thailand": "thailand", "Turkey": "turkey", "Sweden": "sweden",
+  "Thailand": "thailand", "Turkey": "turkey", "Sweden":  "sweden",
   "Norway": "norway", "New Zealand": "newzealand"
 };
 

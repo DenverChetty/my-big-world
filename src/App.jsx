@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { auth, db, googleProvider, doc, getDoc, setDoc, updateDoc } from './firebase-config';
-import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 
 // ============================================
 // COUNTRY DATA (20 countries)
@@ -59,86 +59,29 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
-  useEffect(() => {
-  // Wait for Google script to load
-  const loadGoogleButton = () => {
-    if (window.google && window.google.accounts) {
-      window.google.accounts.id.initialize({
-        client_id: "5932772531-tputkjip90d44tb5eqjjti2qkj23rr53.apps.googleusercontent.com",
-        callback: (response) => {
-          console.log("Google credential received:", response);
-          const credential = GoogleAuthProvider.credential(response.credential);
-          signInWithCredential(auth, credential)
-            .then((result) => {
-              console.log("Sign in successful:", result.user);
-              setUser(result.user);
-              setShowIntro(false);
-            })
-            .catch((error) => {
-              console.error("Sign in failed:", error);
-            });
-        },
-        auto_select: false
-      });
-      const buttonElement = document.getElementById("google-signin-button");
-      if (buttonElement) {
-        window.google.accounts.id.renderButton(buttonElement, {
-          type: "standard",
-          theme: "outline",
-          size: "large",
-          text: "sign_in_with",
-          shape: "rectangular",
-          logo_alignment: "left"
-        });
-      }
-    } else {
-      // Try again after short delay
-      setTimeout(loadGoogleButton, 100);
+  // ============================================
+  // AUTH FUNCTIONS
+  // ============================================
+  
+  // Handle Google Sign-In with Popup
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("Sign in successful:", result.user);
+      setUser(result.user);
+      setShowIntro(false);
+    } catch (error) {
+      console.error("Google sign in failed:", error);
+      alert("Sign in failed: " + error.message);
     }
   };
-  loadGoogleButton();
-}, []);
-  
-  // Google One-Tap Sign-In callback
-  useEffect(() => {
-    window.handleGoogleCredential = (response) => {
-      console.log("Google credential received:", response);
-      const credential = GoogleAuthProvider.credential(response.credential);
-      signInWithCredential(auth, credential)
-        .then((result) => {
-          console.log("Sign in successful:", result.user);
-          setUser(result.user);
-          setShowIntro(false);
-        })
-        .catch((error) => {
-          console.error("Sign in failed:", error);
-        });
-    };
-  }, []);
 
-  // Handle redirect result (for fallback)
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          console.log("Sign in successful:", result.user);
-          setUser(result.user);
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error("Redirect sign in failed:", error);
-      }
-    };
-    handleRedirectResult();
-  }, []);
-
-  // Preload voices
-  useEffect(() => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-    }
-  }, []);
+  const handleSignOut = async () => {
+    await signOut(auth);
+    setUser(null);
+    setStamps([]);
+    setClickedCountries({});
+  };
 
   // Auth state listener
   useEffect(() => {
@@ -161,6 +104,13 @@ function App() {
       setLoading(false);
     });
     return () => unsubscribe();
+  }, []);
+
+  // Preload voices
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
   }, []);
 
   // Save progress
@@ -200,13 +150,9 @@ function App() {
     }
   }, [stamps]);
 
-  const handleSignOut = async () => {
-    await signOut(auth);
-    setUser(null);
-    setStamps([]);
-    setClickedCountries({});
-  };
-
+  // ============================================
+  // MAP FUNCTIONS
+  // ============================================
   const handleCountryClick = (geo) => {
     const countryName = geo.properties?.name;
     const countryId = nameToId[countryName];
@@ -233,6 +179,27 @@ function App() {
     if (clickedCountries[countryId]) return "#ff9800";
     return "#4caf50";
   };
+
+  const resetMapView = () => {
+    setMapResetKey(prev => prev + 1);
+    setClickedCountries({});
+    setShowResetConfirm(false);
+  };
+
+  const resetAllProgress = () => {
+    if (window.confirm("⚠️ Reset ALL progress? This will clear all stamps and badges. This cannot be undone.")) {
+      setStamps([]);
+      setClickedCountries({});
+      celebrationTriggered.current = false;
+    }
+  };
+
+  const getTierBadge = () => {
+    if (stamps.length >= 10 && stamps.length < 20) return { name: "NOVICE EXPLORER", emoji: "🌱" };
+    if (stamps.length >= 20) return { name: "EXPLORER", emoji: "🏆" };
+    return null;
+  };
+  const tier = getTierBadge();
 
   // ============================================
   // MATH GATE FUNCTIONS
@@ -326,27 +293,6 @@ function App() {
     window.speechSynthesis.cancel();
   };
 
-  const resetMapView = () => {
-    setMapResetKey(prev => prev + 1);
-    setClickedCountries({});
-    setShowResetConfirm(false);
-  };
-
-  const resetAllProgress = () => {
-    if (window.confirm("⚠️ Reset ALL progress? This will clear all stamps and badges. This cannot be undone.")) {
-      setStamps([]);
-      setClickedCountries({});
-      celebrationTriggered.current = false;
-    }
-  };
-
-  const getTierBadge = () => {
-    if (stamps.length >= 10 && stamps.length < 20) return { name: "NOVICE EXPLORER", emoji: "🌱" };
-    if (stamps.length >= 20) return { name: "EXPLORER", emoji: "🏆" };
-    return null;
-  };
-  const tier = getTierBadge();
-
   if (loading) {
     return (
       <div className="loading-screen">
@@ -357,21 +303,49 @@ function App() {
   }
 
   if (showIntro) {
-  return (
-    <div className="intro-overlay">
-      <div style={{ textAlign: 'center', padding: '2rem', width: '90%', maxWidth: '450px', margin: '0 auto' }}>
-        <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '300px', height: 'auto', marginBottom: '1.5rem' }} />
-        
-        <div style={{ color: 'white', marginBottom: '1.5rem' }}>
-          <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>✨ Hi! We're Penny and Peter! ✨</p>
-          <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>We explore countries, collect stamps, and learn new languages!</p>
-          <p style={{ margin: '0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>Want to come with us?</p>
-        </div>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-          <div id="google-signin-button"></div>
-
-         <div id="google-signin-button"></div>
+    return (
+      <div className="intro-overlay">
+        <div style={{ textAlign: 'center', padding: '2rem', width: '90%', maxWidth: '450px', margin: '0 auto' }}>
+          <img src="/logo.png" alt="Penny & Peter Panda" style={{ width: '300px', height: 'auto', marginBottom: '1.5rem' }} />
+          
+          <div style={{ color: 'white', marginBottom: '1.5rem' }}>
+            <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>✨ Hi! We're Penny and Peter! ✨</p>
+            <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>We explore countries, collect stamps, and learn new languages!</p>
+            <p style={{ margin: '0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>Want to come with us?</p>
+          </div>
+          
+          <button 
+            onClick={handleGoogleSignIn}
+            style={{
+              background: '#4285f4',
+              color: 'white',
+              border: 'none',
+              padding: '0.85rem',
+              borderRadius: '60px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              marginBottom: '0.75rem'
+            }}
+          >
+            <span style={{
+              background: 'white',
+              color: '#4285f4',
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px'
+            }}>G</span>
+            Sign in with Google
+          </button>
 
           <button 
             onClick={() => setShowIntro(false)}
@@ -389,18 +363,17 @@ function App() {
           >
             Continue as Guest
           </button>
+          
+          <p style={{ color: '#ffd966', fontSize: '0.75rem', margin: '0.5rem 0 0.25rem' }}>
+            🔐 Sign in to save your stamps on any device
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', margin: '0' }}>
+            Guest mode saves progress on this device only
+          </p>
         </div>
-        
-        <p style={{ color: '#ffd966', fontSize: '0.75rem', margin: '0.5rem 0 0.25rem' }}>
-          🔐 Sign in to save your stamps on any device
-        </p>
-        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.7rem', margin: '0' }}>
-          Guest mode saves progress on this device only
-        </p>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="app">
@@ -575,17 +548,17 @@ function App() {
             <div className="parent-header">🔒 PARENTS & TEACHERS</div>
             {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
             <p className="no-pressure-message">There's no pressure to donate. My Big World is free and ad-free for every family, no matter what.</p>
-          <div className="donation-section">
-  <a 
-    href="https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="donate-btn-fallback"
-  >
-    💝 Donate with PayPal
-  </a>
-  <p className="donate-note">Thank you for keeping My Big World ad-free! 🌍</p>
-</div>
+            <div className="donation-section">
+              <a 
+                href="https://www.paypal.com/donate?hosted_button_id=JWKA5H7X7EL2Y"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="donate-btn-fallback"
+              >
+                💝 Donate with PayPal
+              </a>
+              <p className="donate-note">Thank you for keeping My Big World ad-free! 🌍</p>
+            </div>
             <hr />
             <div className="premium-section">
               <h4>⭐ Premium (Coming Soon)</h4>
@@ -686,6 +659,16 @@ function App() {
         .footer-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem; }
         .about-btn { background: none; border: none; color: #1e6f5c; font-size: 0.7rem; cursor: pointer; text-decoration: underline; }
         .separator { color: #ccc; }
+        .donate-btn-fallback {
+          display: inline-block;
+          background: #0070ba;
+          color: white;
+          text-decoration: none;
+          padding: 10px 20px;
+          border-radius: 60px;
+          font-weight: bold;
+          margin: 10px 0;
+        }
 
         /* Math Gate */
         .math-modal { text-align: center; max-width: 350px; }
@@ -707,21 +690,6 @@ function App() {
         .parent-header { font-size: 1.3rem; font-weight: bold; color: #1e6f5c; margin-bottom: 1rem; text-align: center; }
         .signed-in { text-align: center; font-size: 0.8rem; color: #555; margin-bottom: 1rem; }
         .donation-section { text-align: center; margin: 1rem 0; }
-.donate-btn-fallback {
-  display: inline-block;
-  background: #0070ba;
-  color: white;
-  text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 60px;
-  font-weight: bold;
-  margin: 10px 0;
-}
-        .donate-img {
-  max-width: 100%;
-  height: auto;
-  cursor: pointer;
-}
         .donate-note { font-size: 0.75rem; color: #555; margin-top: 0.75rem; line-height: 1.4; }
         .premium-section h4 { color: #1e6f5c; margin-bottom: 0.5rem; }
         .premium-section ul { margin-left: 1rem; font-size: 0.8rem; color: #555; }

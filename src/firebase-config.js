@@ -4,7 +4,7 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore
 
 const firebaseConfig = {
   apiKey: "AIzaSyAUIujnqnEWd6jg2crES0lfFlUKzG2lTv4",
-  authDomain: "mybigworld.online",
+  authDomain: "auth.mybigworld.online",
   projectId: "my-big-world-79980",
   storageBucket: "my-big-world-79980.firebasestorage.app",
   messagingSenderId: "60867825408",

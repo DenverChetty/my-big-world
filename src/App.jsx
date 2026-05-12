@@ -343,27 +343,10 @@ function App() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-          <button 
-            onClick={handleGoogleSignIn}
-            style={{
-              background: '#4285f4',
-              color: 'white',
-              border: 'none',
-              padding: '0.85rem',
-              borderRadius: '60px',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px'
-            }}
-          >
-            <span style={{ background: 'white', color: '#4285f4', width: '24px', height: '24px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>G</span>
-            Sign in with Google
-          </button>
+         <SignIn onSignIn={(user) => {
+  setUser(user);
+  setShowIntro(false);
+}} />
           
           <button 
             onClick={() => setShowIntro(false)}

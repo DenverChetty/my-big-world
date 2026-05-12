@@ -575,13 +575,22 @@ function App() {
             <div className="parent-header">🔒 PARENTS & TEACHERS</div>
             {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
             <p className="no-pressure-message">There's no pressure to donate. My Big World is free and ad-free for every family, no matter what.</p>
-            <div className="donation-section">
-              <form action="https://www.paypal.com/donate" method="post" target="_top">
-                <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
-                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="Donate" className="donate-img" />
-              </form>
-              <p className="donate-note">Thank you for keeping My Big World ad-free! 🌍</p>
-            </div>
+           <div className="donation-section">
+  <form action="https://www.paypal.com/donate" method="post" target="_top">
+    <input type="hidden" name="hosted_button_id" value="JWKA5H7X7EL2Y" />
+    <input 
+      type="image" 
+      src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
+      border="0" 
+      name="submit" 
+      title="PayPal - The safer, easier way to pay online!" 
+      alt="Donate with PayPal button" 
+      className="donate-img"
+    />
+    <img alt="" border="0" src="https://www.paypal.com/en_ZA/i/scr/pixel.gif" width="1" height="1" />
+  </form>
+  <p className="donate-note">Thank you for keeping My Big World ad-free! 🌍</p>
+</div>
             <hr />
             <div className="premium-section">
               <h4>⭐ Premium (Coming Soon)</h4>
@@ -703,7 +712,11 @@ function App() {
         .parent-header { font-size: 1.3rem; font-weight: bold; color: #1e6f5c; margin-bottom: 1rem; text-align: center; }
         .signed-in { text-align: center; font-size: 0.8rem; color: #555; margin-bottom: 1rem; }
         .donation-section { text-align: center; margin: 1rem 0; }
-        .donate-img { max-width: 100%; height: auto; cursor: pointer; }
+        .donate-img {
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+}
         .donate-note { font-size: 0.75rem; color: #555; margin-top: 0.75rem; line-height: 1.4; }
         .premium-section h4 { color: #1e6f5c; margin-bottom: 0.5rem; }
         .premium-section ul { margin-left: 1rem; font-size: 0.8rem; color: #555; }

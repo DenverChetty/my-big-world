@@ -60,23 +60,7 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
-  useEffect(() => {
-  console.log("Checking for redirect result...");
-  getRedirectResult(auth)
-    .then((result) => {
-      console.log("Redirect result:", result);
-      if (result) {
-        console.log("User found:", result.user);
-        setUser(result.user);
-      } else {
-        console.log("No redirect result found");
-      }
-    })
-    .catch((error) => {
-      console.error("Redirect error code:", error.code);
-      console.error("Redirect error message:", error.message);
-    });
-}, []);
+
 
   // Handle redirect result FIRST (before other effects)
   useEffect(() => {
@@ -181,15 +165,8 @@ function App() {
     setStamps([]);
     setClickedCountries({});
   };
-  
-  const handleGoogleResponse = (response) => {
-  console.log("Google response:", response);
-  // You'll need to verify this on your backend
-};
 
-const handleSignOut = async () => {
-  // ... existing code ...
-};
+
 
   const handleCountryClick = (geo) => {
     const countryName = geo.properties?.name;

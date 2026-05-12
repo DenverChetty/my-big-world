@@ -24,3 +24,24 @@ const googleProvider = new GoogleAuthProvider();
 setPersistence(auth, browserLocalPersistence);
 
 export { auth, db, googleProvider, doc, getDoc, setDoc, updateDoc };
+
+// src/firebase-config.js
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, setPersistence, browserLocalPersistence, signInWithPopup } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+// ... your firebaseConfig object is unchanged ...
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+// Optional: Add custom parameters (like forcing account selection)
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+setPersistence(auth, browserLocalPersistence);
+
+export { auth, db, googleProvider, signInWithPopup };

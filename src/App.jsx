@@ -5,7 +5,7 @@ import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simp
 // COUNTRY DATA (20 countries) — KEEP YOUR EXISTING DATA
 // ============================================
 
-// [YOUR EXISTING countriesData GOES HERE — DO NOT CHANGE]
+// [YOUR EXISTING countriesData GOES HERE — DO NOT CHANGE] 
 
 const nameToId = {
   "Japan": "japan", "France": "france", "Brazil": "brazil", "Australia": "australia",

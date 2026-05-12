@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { auth, db, googleProvider, doc, getDoc, setDoc, updateDoc } from './firebase-config';
 import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'firebase/auth';
-import SignIn from './SignIn';
+
 
 // ============================================
 // COUNTRY DATA (20 countries)

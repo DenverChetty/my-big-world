@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
-import { auth, db, googleProvider, doc, getDoc, setDoc, updateDoc } from './firebase-config';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { supabase } from './supabase-config';
 
 // ============================================
 // COUNTRY DATA (20 countries)
@@ -60,16 +59,18 @@ function App() {
   const celebrationTriggered = useRef(false);
 
   // ============================================
-  // AUTH FUNCTIONS
+  // SUPABASE AUTH FUNCTIONS
   // ============================================
-  
-  // Handle Google Sign-In with Popup
+
   const handleGoogleSignIn = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log("Sign in successful:", result.user);
-      setUser(result.user);
-      setShowIntro(false);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
     } catch (error) {
       console.error("Google sign in failed:", error);
       alert("Sign in failed: " + error.message);
@@ -77,7 +78,7 @@ function App() {
   };
 
   const handleSignOut = async () => {
-    await signOut(auth);
+    await supabase.auth.signOut();
     setUser(null);
     setStamps([]);
     setClickedCountries({});
@@ -85,25 +86,27 @@ function App() {
 
   // Auth state listener
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log("Auth state changed:", firebaseUser);
-      setUser(firebaseUser);
-      if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setStamps(data.stamps || []);
-          setClickedCountries(data.clickedCountries || {});
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log("Auth state changed:", event, session);
+        setUser(session?.user || null);
+        
+        if (session?.user) {
+          // Load stamps from localStorage for now (cloud save later)
+          const savedStamps = localStorage.getItem('myBigWorldStamps');
+          const savedClicked = localStorage.getItem('myBigWorldClicked');
+          if (savedStamps) setStamps(JSON.parse(savedStamps));
+          if (savedClicked) setClickedCountries(JSON.parse(savedClicked));
+        } else {
+          const savedStamps = localStorage.getItem('myBigWorldStamps');
+          const savedClicked = localStorage.getItem('myBigWorldClicked');
+          if (savedStamps) setStamps(JSON.parse(savedStamps));
+          if (savedClicked) setClickedCountries(JSON.parse(savedClicked));
         }
-      } else {
-        const savedStamps = localStorage.getItem('myBigWorldStamps');
-        const savedClicked = localStorage.getItem('myBigWorldClicked');
-        if (savedStamps) setStamps(JSON.parse(savedStamps));
-        if (savedClicked) setClickedCountries(JSON.parse(savedClicked));
+        setLoading(false);
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    );
+    return () => subscription.unsubscribe();
   }, []);
 
   // Preload voices
@@ -113,19 +116,11 @@ function App() {
     }
   }, []);
 
-  // Save progress
+  // Save progress to localStorage
   useEffect(() => {
-    if (user) {
-      setDoc(doc(db, "users", user.uid), {
-        stamps: stamps,
-        clickedCountries: clickedCountries,
-        lastUpdated: new Date().toISOString()
-      }, { merge: true });
-    } else {
-      localStorage.setItem('myBigWorldStamps', JSON.stringify(stamps));
-      localStorage.setItem('myBigWorldClicked', JSON.stringify(clickedCountries));
-    }
-  }, [stamps, clickedCountries, user]);
+    localStorage.setItem('myBigWorldStamps', JSON.stringify(stamps));
+    localStorage.setItem('myBigWorldClicked', JSON.stringify(clickedCountries));
+  }, [stamps, clickedCountries]);
 
   // Badge milestones
   useEffect(() => {
@@ -546,7 +541,7 @@ function App() {
           <div className="modal">
             <button className="modal-close" onClick={() => setShowParentGate(false)}>✕</button>
             <div className="parent-header">🔒 PARENTS & TEACHERS</div>
-            {user && <p className="signed-in">Signed in as: {user.displayName || user.email}</p>}
+            {user && <p className="signed-in">Signed in as: {user.email}</p>}
             <p className="no-pressure-message">There's no pressure to donate. My Big World is free and ad-free for every family, no matter what.</p>
             <div className="donation-section">
               <a 

@@ -59,15 +59,18 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
+  // Handle redirect result FIRST (before other effects)
   useEffect(() => {
-  getRedirectResult(auth).then((result) => {
-    if (result) {
-      setUser(result.user);
-    }
-  }).catch((error) => {
-    console.error("Redirect sign in failed:", error);
-  });
-}, []);
+    getRedirectResult(auth).then((result) => {
+      if (result) {
+        console.log("Redirect sign in successful:", result.user);
+        setUser(result.user);
+      }
+    }).catch((error) => {
+      console.error("Redirect sign in failed:", error);
+    });
+  }, []);
+
   // Preload voices
   useEffect(() => {
     if ('speechSynthesis' in window) {
@@ -75,9 +78,10 @@ function App() {
     }
   }, []);
 
-  // Auth
+  // Auth state listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log("Auth state changed:", firebaseUser);
       setUser(firebaseUser);
       if (firebaseUser) {
         const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
@@ -135,6 +139,7 @@ function App() {
   }, [stamps]);
 
   const handleGoogleSignIn = async () => {
+  console.log("Google Sign In clicked - starting redirect");
   try {
     await signInWithRedirect(auth, googleProvider);
   } catch (error) {

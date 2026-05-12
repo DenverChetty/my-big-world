@@ -59,6 +59,24 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null);
   const celebrationTriggered = useRef(false);
 
+  useEffect(() => {
+  console.log("Checking for redirect result...");
+  getRedirectResult(auth)
+    .then((result) => {
+      console.log("Redirect result:", result);
+      if (result) {
+        console.log("User found:", result.user);
+        setUser(result.user);
+      } else {
+        console.log("No redirect result found");
+      }
+    })
+    .catch((error) => {
+      console.error("Redirect error code:", error.code);
+      console.error("Redirect error message:", error.message);
+    });
+}, []);
+
   // Handle redirect result FIRST (before other effects)
   useEffect(() => {
   const handleRedirectResult = async () => {
@@ -145,12 +163,14 @@ function App() {
     }
   }, [stamps]);
 
-  const handleGoogleSignIn = async () => {
-  console.log("Google Sign In clicked - starting redirect");
+ const handleGoogleSignIn = async () => {
+  console.log("Sign in button clicked - starting redirect");
   try {
     await signInWithRedirect(auth, googleProvider);
+    console.log("Redirect initiated");
   } catch (error) {
-    console.error("Google sign in failed:", error);
+    console.error("Sign in error code:", error.code);
+    console.error("Sign in error message:", error.message);
   }
 };
 

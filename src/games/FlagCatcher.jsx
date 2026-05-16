@@ -25,7 +25,7 @@ const countries = [
   { id: "newzealand", name: "New Zealand", flagEmoji: "🇳🇿", unlockedAt: 700 }
 ];
 
-function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) {
+function FlagCatcher({ onClose, onEarnStamp }) {
   const [gameState, setGameState] = useState('title');
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
@@ -42,7 +42,7 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
   const animationRef = useRef(null);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 350, height: 500 });
+  const [dimensions, setDimensions] = useState({ width: 400, height: 500 });
   
   // Load high score
   useEffect(() => {
@@ -58,7 +58,7 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
     }
   }, [score, highScore]);
   
-  // Update unlocked countries
+  // Update unlocked countries based on score
   useEffect(() => {
     const newUnlocked = countries.filter(c => c.unlockedAt <= score);
     setUnlockedCountries(newUnlocked);
@@ -83,9 +83,9 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
     setFallingFlags(prev => [...prev, {
       id: Date.now() + Math.random(),
       country: randomCountry,
-      x: 30 + Math.random() * (dimensions.width - 70),
+      x: 40 + Math.random() * (dimensions.width - 80),
       y: 30,
-      speedY: 70 + Math.floor(score / 100) * 8
+      speedY: 80 + Math.floor(score / 150) * 15
     }]);
   }, [gameState, unlockedCountries, dimensions.width, score]);
   
@@ -117,6 +117,7 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
   const catchFlag = useCallback((country) => {
     if (gameState !== 'playing') return;
     
+    // Find the closest flag of this country (lowest y position)
     const matchingFlags = fallingFlags.filter(f => f.country.id === country.id);
     if (matchingFlags.length === 0) return;
     
@@ -129,10 +130,12 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
     setScore(prev => prev + pointsEarned);
     setCombo(prev => prev + 1);
     
+    // Vibrate on mobile
     if (window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(20);
     }
     
+    // Streak bonuses
     if (combo + 1 === 5) {
       setStreakMessage('🔥 5 in a row! +5 bonus! 🔥');
       setTimeout(() => setStreakMessage(null), 1000);
@@ -145,12 +148,13 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
       setTimeout(() => setStreakMessage(null), 1500);
     }
     
+    // Earn stamp in main app
     if (onEarnStamp) {
       onEarnStamp(country.id);
     }
   }, [gameState, fallingFlags, combo, onEarnStamp]);
   
-  // Miss a flag
+  // Miss a flag (hit bottom)
   const missFlag = useCallback((flagId) => {
     setFallingFlags(prev => prev.filter(f => f.id !== flagId));
     setLives(prev => {
@@ -177,23 +181,46 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
     
     ctx.clearRect(0, 0, dimensions.width, dimensions.height);
     
-    // Background
-    ctx.fillStyle = '#0d2b4e';
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, dimensions.height);
+    grad.addColorStop(0, '#1a4e6e');
+    grad.addColorStop(1, '#0d2b4e');
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, dimensions.width, dimensions.height);
     
     // Draw falling flags
     fallingFlags.forEach(flag => {
-      ctx.font = '38px "Segoe UI Emoji"';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      // Draw circular background
       ctx.shadowBlur = 8;
       ctx.shadowColor = 'rgba(0,0,0,0.3)';
-      ctx.fillText(flag.country.flagEmoji, flag.x, flag.y);
+      ctx.beginPath();
+      ctx.arc(flag.x, flag.y, 28, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.fill();
       ctx.shadowBlur = 0;
+      
+      // Draw flag emoji
+      ctx.font = '36px "Segoe UI Emoji"';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#000';
+      ctx.fillText(flag.country.flagEmoji, flag.x, flag.y);
     });
+    
+    // Draw bottom danger zone indicator
+    ctx.beginPath();
+    ctx.rect(0, dimensions.height - 70, dimensions.width, 70);
+    ctx.fillStyle = 'rgba(255, 59, 48, 0.15)';
+    ctx.fill();
+    
+    ctx.font = '12px "Nunito"';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.textAlign = 'center';
+    ctx.fillText('DANGER ZONE', dimensions.width / 2, dimensions.height - 50);
+    
   }, [dimensions, fallingFlags]);
   
-  // Animation loop
+  // Animation loop - update flag positions
   useEffect(() => {
     let lastTime = 0;
     
@@ -214,10 +241,11 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
             y: flag.y + flag.speedY * deltaTime
           }));
           
-          const missed = updated.filter(f => f.y >= dimensions.height - 85);
+          // Check for flags that hit the bottom (danger zone)
+          const missed = updated.filter(f => f.y >= dimensions.height - 65);
           missed.forEach(f => missFlag(f.id));
           
-          return updated.filter(f => f.y < dimensions.height - 85);
+          return updated.filter(f => f.y < dimensions.height - 65);
         });
       }
       
@@ -231,7 +259,7 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
     };
   }, [gameState, dimensions.height, missFlag, drawCanvas]);
   
-  // Cleanup
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (spawnIntervalRef.current) clearInterval(spawnIntervalRef.current);
@@ -243,11 +271,10 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
-        const maxWidth = Math.min(420, window.innerWidth - 40);
-        const maxHeight = window.innerHeight - 80;
+        const width = Math.min(450, window.innerWidth - 40);
         setDimensions({ 
-          width: maxWidth, 
-          height: Math.min(maxHeight * 0.6, 450)
+          width: width, 
+          height: Math.min(550, window.innerHeight - 200)
         });
       }
     };
@@ -256,7 +283,7 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
   
-  const activeButtons = gameState === 'playing' ? unlockedCountries : [];
+  const activeButtons = gameState === 'playing' ? unlockedCountries.slice(0, 8) : [];
   
   return (
     <div className="flag-catcher-overlay" ref={containerRef}>
@@ -264,78 +291,80 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
         {/* Exit Button */}
         <button className="exit-button" onClick={onClose}>✕</button>
         
-        {/* Stats */}
-        <div className="game-stats">
-          <div className="score-box">
+        {/* Stats Bar */}
+        <div className="stats-bar">
+          <div className="score-section">
             <div className="score-label">SCORE</div>
             <div className="score-value">{score}</div>
-            <div className="high-score">🏆 {highScore}</div>
+            <div className="best-label">🏆 BEST: {highScore}</div>
           </div>
-          <div className="lives-box">
-            {'❤️'.repeat(lives)}{'🤍'.repeat(5 - lives)}
+          <div className="lives-section">
+            {'❤️'.repeat(lives)}{'🖤'.repeat(5 - lives)}
           </div>
         </div>
         
-        {/* Next unlock */}
+        {/* Next Unlock */}
         {nextUnlockAt && gameState === 'playing' && (
           <div className="next-unlock">
-            {nextUnlockAt - score} pts to next country
+            {nextUnlockAt - score} more points to unlock a new flag!
           </div>
         )}
         
-        {/* Streak message */}
+        {/* Streak Message Popup */}
         {streakMessage && (
-          <div className="streak-message">{streakMessage}</div>
+          <div className="streak-popup">{streakMessage}</div>
         )}
         
-        {/* Celebration */}
+        {/* Celebration Popup */}
         {showCelebration && celebrationMessage && (
-          <div className="celebration-message">{celebrationMessage}</div>
+          <div className="celebration-popup">{celebrationMessage}</div>
         )}
         
-        {/* Canvas */}
+        {/* Game Canvas */}
         <canvas
           ref={canvasRef}
           width={dimensions.width}
           height={dimensions.height}
           className="game-canvas"
-          style={{ width: '100%', height: 'auto', borderRadius: '16px', background: '#0d2b4e' }}
         />
         
-        {/* Buttons */}
-        <div className="flag-buttons">
-          {activeButtons.slice(0, 6).map(country => (
+        {/* Country Buttons (with flags) */}
+        <div className="button-grid">
+          {activeButtons.map(country => (
             <button
               key={country.id}
-              className="flag-btn"
+              className="country-button"
               onClick={() => catchFlag(country)}
             >
-              <span className="flag-emoji">{country.flagEmoji}</span>
-              <span className="country-name">{country.name}</span>
+              <span className="button-flag">{country.flagEmoji}</span>
+              <span className="button-name">{country.name}</span>
             </button>
           ))}
         </div>
         
-        {/* Title Screen */}
+        {/* Title Overlay */}
         {gameState === 'title' && (
-          <div className="overlay-screen">
+          <div className="overlay">
             <h2>🏆 FLAG CATCHER 🏆</h2>
             <p>Catch the falling flags!</p>
-            <p>🔥 Streaks = bonus points</p>
-            <p>⭐ 10 streak = extra life</p>
-            <p>🎁 Unlock new countries</p>
-            <button className="start-btn" onClick={startGame}>START</button>
+            <p>Tap the matching country button before they hit the bottom</p>
+            <div className="features">
+              <p>🔥 5 in a row = bonus points</p>
+              <p>⭐ 10 in a row = extra life</p>
+              <p>🎁 Score points to unlock new flags</p>
+            </div>
+            <button className="start-button" onClick={startGame}>START GAME</button>
           </div>
         )}
         
-        {/* Game Over Screen */}
+        {/* Game Over Overlay */}
         {gameState === 'gameOver' && (
-          <div className="overlay-screen">
+          <div className="overlay">
             <h2>🎮 GAME OVER 🎮</h2>
-            <p className="final-score">Score: {score}</p>
-            <p className="best-score">Best: {highScore}</p>
-            <button className="start-btn" onClick={startGame}>PLAY AGAIN</button>
-            <button className="menu-btn" onClick={onClose}>EXIT</button>
+            <p className="final-score">YOUR SCORE: {score}</p>
+            <p className="best-score">BEST SCORE: {highScore}</p>
+            <button className="start-button" onClick={startGame}>PLAY AGAIN</button>
+            <button className="exit-button-overlay" onClick={onClose}>EXIT TO MAP</button>
           </div>
         )}
       </div>
@@ -358,159 +387,176 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
         .flag-catcher-container {
           position: relative;
           background: #0d2b4e;
-          border-radius: 24px;
-          padding: 15px;
-          max-width: 450px;
+          border-radius: 28px;
+          padding: 16px;
+          max-width: 500px;
           width: 100%;
           max-height: 95vh;
           overflow-y: auto;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+          box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
         
         .exit-button {
           position: absolute;
-          top: 8px;
-          right: 12px;
-          background: rgba(255,255,255,0.2);
+          top: 12px;
+          right: 16px;
+          background: rgba(255,255,255,0.15);
           border: none;
           color: white;
           font-size: 18px;
           cursor: pointer;
-          width: 32px;
-          height: 32px;
+          width: 34px;
+          height: 34px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 10;
+          z-index: 20;
+          transition: all 0.2s;
         }
         
-        .game-stats {
+        .exit-button:hover {
+          background: rgba(255,255,255,0.3);
+        }
+        
+        .stats-bar {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 10px;
-          padding: 8px 12px;
-          background: rgba(255,255,255,0.1);
-          border-radius: 16px;
+          margin-bottom: 12px;
+          padding: 10px 15px;
+          background: rgba(255,255,255,0.08);
+          border-radius: 20px;
         }
         
-        .score-box {
+        .score-section {
           display: flex;
           flex-direction: column;
         }
         
         .score-label {
-          font-size: 9px;
-          color: rgba(255,255,255,0.6);
+          font-size: 10px;
+          color: rgba(255,255,255,0.5);
+          letter-spacing: 1px;
         }
         
         .score-value {
-          font-size: 24px;
-          font-weight: bold;
+          font-size: 32px;
+          font-weight: 800;
           color: #ffd966;
+          line-height: 1;
         }
         
-        .high-score {
+        .best-label {
           font-size: 9px;
-          color: rgba(255,255,255,0.6);
+          color: rgba(255,255,255,0.4);
         }
         
-        .lives-box {
-          font-size: 18px;
+        .lives-section {
+          font-size: 20px;
           letter-spacing: 3px;
         }
         
         .next-unlock {
           text-align: center;
-          font-size: 10px;
-          color: rgba(255,255,255,0.7);
-          margin-bottom: 8px;
-          padding: 4px;
+          font-size: 11px;
+          color: rgba(255,255,255,0.8);
+          margin-bottom: 10px;
+          padding: 6px;
           background: rgba(255,215,0,0.15);
-          border-radius: 20px;
+          border-radius: 40px;
         }
         
-        .streak-message {
-          position: absolute;
-          top: 35%;
-          left: 0;
-          right: 0;
-          text-align: center;
-          font-size: 14px;
-          font-weight: bold;
-          color: #ffd966;
-          background: rgba(0,0,0,0.8);
-          padding: 8px;
-          border-radius: 30px;
-          width: 80%;
-          margin: 0 auto;
-          z-index: 5;
-          pointer-events: none;
-        }
-        
-        .celebration-message {
+        .streak-popup {
           position: absolute;
           top: 30%;
-          left: 0;
-          right: 0;
+          left: 50%;
+          transform: translateX(-50%);
           text-align: center;
           font-size: 16px;
           font-weight: bold;
-          color: #ff9800;
-          background: rgba(0,0,0,0.8);
-          padding: 10px;
+          color: #ffd966;
+          background: rgba(0,0,0,0.85);
+          padding: 8px 20px;
           border-radius: 40px;
-          width: 80%;
-          margin: 0 auto;
-          z-index: 5;
+          white-space: nowrap;
+          z-index: 25;
           pointer-events: none;
+          animation: fadeOut 1s ease-out forwards;
+        }
+        
+        .celebration-popup {
+          position: absolute;
+          top: 25%;
+          left: 50%;
+          transform: translateX(-50%);
+          text-align: center;
+          font-size: 18px;
+          font-weight: bold;
+          color: #ff9800;
+          background: rgba(0,0,0,0.85);
+          padding: 12px 24px;
+          border-radius: 50px;
+          white-space: nowrap;
+          z-index: 25;
+          pointer-events: none;
+          animation: fadeOut 1.5s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+          0% { opacity: 1; transform: translateX(-50%) scale(1); }
+          70% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+          100% { opacity: 0; transform: translateX(-50%) scale(1.1); }
         }
         
         .game-canvas {
           display: block;
           margin: 0 auto;
+          border-radius: 16px;
+          background: #0d2b4e;
           cursor: pointer;
+          width: 100%;
+          height: auto;
         }
         
-        .flag-buttons {
+        .button-grid {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
+          gap: 8px;
           justify-content: center;
-          margin-top: 12px;
+          margin-top: 15px;
           padding: 8px 0;
         }
         
-        .flag-btn {
+        .country-button {
           display: flex;
           align-items: center;
-          gap: 6px;
-          padding: 6px 12px;
+          gap: 8px;
+          padding: 8px 16px;
           background: #1e6f5c;
           border: none;
           border-radius: 60px;
           color: white;
-          font-size: 12px;
+          font-size: 14px;
           font-weight: 600;
           cursor: pointer;
-          transition: transform 0.1s;
+          transition: all 0.05s linear;
         }
         
-        .flag-btn:active {
-          transform: scale(0.95);
+        .country-button:active {
+          transform: scale(0.94);
           background: #ff9800;
         }
         
-        .flag-emoji {
-          font-size: 14px;
+        .button-flag {
+          font-size: 18px;
         }
         
-        .country-name {
-          font-size: 10px;
+        .button-name {
+          font-size: 12px;
         }
         
-        .overlay-screen {
+        .overlay {
           position: absolute;
           top: 0;
           left: 0;
@@ -521,68 +567,93 @@ function FlagCatcher({ onClose, onEarnStamp, onEarnBadge, currentStamps = [] }) 
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          border-radius: 24px;
+          border-radius: 28px;
           text-align: center;
-          padding: 20px;
-          z-index: 15;
+          padding: 25px;
+          z-index: 30;
         }
         
-        .overlay-screen h2 {
-          font-size: 22px;
+        .overlay h2 {
+          font-size: 26px;
           color: #ffd966;
           margin-bottom: 15px;
         }
         
-        .overlay-screen p {
+        .overlay p {
           color: white;
-          margin: 5px 0;
-          font-size: 12px;
+          margin: 6px 0;
+          font-size: 13px;
+        }
+        
+        .features {
+          margin: 15px 0;
+          padding: 10px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 20px;
         }
         
         .final-score {
-          font-size: 28px;
-          font-weight: bold;
+          font-size: 36px;
+          font-weight: 800;
           color: #ffd966;
-          margin: 10px 0;
+          margin: 15px 0 5px;
         }
         
         .best-score {
           font-size: 14px;
-          color: rgba(255,255,255,0.7);
-          margin-bottom: 20px;
+          color: rgba(255,255,255,0.6);
+          margin-bottom: 25px;
         }
         
-        .start-btn {
+        .start-button {
           background: #4caf50;
           color: white;
           border: none;
-          padding: 10px 28px;
+          padding: 12px 32px;
           border-radius: 60px;
-          font-size: 16px;
+          font-size: 18px;
           font-weight: bold;
           cursor: pointer;
           margin: 8px 0;
+          transition: transform 0.1s;
         }
         
-        .menu-btn {
-          background: rgba(255,255,255,0.2);
+        .start-button:active {
+          transform: scale(0.96);
+        }
+        
+        .exit-button-overlay {
+          background: rgba(255,255,255,0.15);
           color: white;
           border: none;
-          padding: 8px 20px;
+          padding: 8px 24px;
           border-radius: 60px;
-          font-size: 12px;
+          font-size: 13px;
           cursor: pointer;
+          margin-top: 8px;
         }
         
-        @media (max-width: 450px) {
-          .flag-btn {
-            padding: 5px 8px;
+        @media (max-width: 480px) {
+          .button-grid {
+            gap: 5px;
           }
-          .flag-emoji {
-            font-size: 12px;
+          .country-button {
+            padding: 5px 10px;
           }
-          .country-name {
-            font-size: 8px;
+          .button-flag {
+            font-size: 14px;
+          }
+          .button-name {
+            font-size: 9px;
+          }
+          .stats-bar {
+            padding: 6px 12px;
+          }
+          .score-value {
+            font-size: 24px;
+          }
+          .lives-section {
+            font-size: 16px;
           }
         }
       `}</style>

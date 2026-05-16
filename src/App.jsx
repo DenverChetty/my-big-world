@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 
-
 // ============================================
 // COUNTRY DATA (20 countries)
 // ============================================
@@ -56,7 +55,6 @@ function App() {
   const [mathQuestion, setMathQuestion] = useState({ text: "", answer: 0 });
   const [mathAnswer, setMathAnswer] = useState("");
   const [pendingAction, setPendingAction] = useState(null);
-  const [showFlagCatcher, setShowFlagCatcher] = useState(false);
   const celebrationTriggered = useRef(false);
 
   // Preload voices
@@ -347,16 +345,6 @@ function App() {
         <img src="/headerlogo.png" alt="Penny & Peter Panda" className="header-logo" />
       </header>
 
-      {/* Flag Catcher Game Button */}
-      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-        <button 
-          className="play-game-btn"
-          onClick={() => setShowFlagCatcher(true)}
-        >
-          🎮 Play Flag Catcher
-        </button>
-      </div>
-
       <div className="main-container">
         <section className="map-section">
           <div className="map-container">
@@ -514,24 +502,7 @@ function App() {
         </div>
       )}
 
-      {/* Flag Catcher Game */}
-      {showFlagCatcher && (
-        <FlagCatcher
-          onClose={() => setShowFlagCatcher(false)}
-          onEarnStamp={(countryId) => {
-            if (!stamps.includes(countryId)) {
-              setStamps(prev => [...prev, countryId]);
-            }
-          }}
-          onEarnBadge={(badgeName) => {
-            console.log('Earned badge:', badgeName);
-          }}
-          currentStamps={stamps}
-        />
-      )}
-
       <style jsx>{`
-        /* INTRO SCREEN STYLES */
         .intro-overlay {
           position: fixed;
           top: 0;
@@ -545,31 +516,13 @@ function App() {
           z-index: 10000;
         }
         
-        /* MAIN APP STYLES */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         .app { font-family: 'Nunito', sans-serif; max-width: 1400px; margin: 0 auto; padding: 1rem; background: #0d2b4e; min-height: 100vh; }
         .loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #0d2b4e; color: white; }
         .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .header { text-align: center; padding: 1rem; background: #1e6f5c; border-radius: 32px; margin-bottom: 1rem; }
+        .header { text-align: center; padding: 1rem; background: #1e6f5c; border-radius: 32px; margin-bottom: 2rem; }
         .header-logo { width: 220px; max-width: 90%; height: auto; object-fit: contain; }
-        
-        .play-game-btn {
-          background: #ff9800;
-          color: white;
-          border: none;
-          padding: 10px 24px;
-          border-radius: 60px;
-          font-size: 16px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: transform 0.1s;
-        }
-        
-        .play-game-btn:active {
-          transform: scale(0.95);
-        }
-        
         .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
         .map-section { flex: 1.5; min-width: 0; }
         .right-panel { flex: 0.8; min-width: 280px; max-width: 380px; display: flex; flex-direction: column; gap: 1.5rem; }
@@ -608,7 +561,6 @@ function App() {
         .stamp-name { font-size: 0.7rem; }
         .stamp-count { text-align: center; margin-top: 0.75rem; font-weight: bold; color: #1e6f5c; }
         
-        /* Footer */
         .footer { text-align: center; padding: 1rem; margin-top: 1rem; background: white; border-radius: 24px; }
         .footer-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.25rem; }
         .footer-message { font-size: 0.85rem; font-weight: bold; color: #1e6f5c; margin-bottom: 0.5rem; }
@@ -629,7 +581,6 @@ function App() {
           margin: 10px 0;
         }
 
-        /* Math Gate */
         .math-modal { text-align: center; max-width: 350px; }
         .math-icon { font-size: 3rem; margin-bottom: 0.5rem; }
         .math-question { font-size: 1.8rem; font-weight: bold; color: #1e6f5c; margin: 1rem 0; }
@@ -638,7 +589,6 @@ function App() {
         .math-note { font-size: 0.7rem; color: #999; margin-top: 0.5rem; }
         .no-pressure-message { font-size: 0.75rem; color: #1e6f5c; background: #f0f7f4; padding: 0.5rem; border-radius: 12px; margin-bottom: 1rem; text-align: center; }
 
-        /* Modal & Celebration */
         .celebration-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; }
         .celebration-content { text-align: center; background: linear-gradient(135deg, #ffd966, #ff9800); padding: 2rem; border-radius: 48px; }
         .celebration-badge { font-size: 1.5rem; font-weight: bold; color: #1e6f5c; background: white; padding: 0.75rem 1.5rem; border-radius: 60px; margin-bottom: 0.75rem; }

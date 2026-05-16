@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
-import FlagCatcher from './games/FlagCatcher';
-import FallingBalls from './games/FallingBalls';
 
-// ... then where you render it:
-{showFlagCatcher && (
-  <FallingBalls
-    onClose={() => setShowFlagCatcher(false)}
-  />
-)}
 
 // ============================================
 // COUNTRY DATA (20 countries)

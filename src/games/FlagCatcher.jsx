@@ -7,22 +7,13 @@ const countries = [
   { id: "japan", name: "Japan", flagEmoji: "🇯🇵", unlockedAt: 0 },
   { id: "france", name: "France", flagEmoji: "🇫🇷", unlockedAt: 0 },
   { id: "brazil", name: "Brazil", flagEmoji: "🇧🇷", unlockedAt: 0 },
-  { id: "australia", name: "Australia", flagEmoji: "🇦🇺", unlockedAt: 50 },
-  { id: "egypt", name: "Egypt", flagEmoji: "🇪🇬", unlockedAt: 50 },
+  { id: "australia", name: "Australia", flagEmoji: "🇦🇺", unlockedAt: 30 },
+  { id: "egypt", name: "Egypt", flagEmoji: "🇪🇬", unlockedAt: 60 },
   { id: "canada", name: "Canada", flagEmoji: "🇨🇦", unlockedAt: 100 },
-  { id: "india", name: "India", flagEmoji: "🇮🇳", unlockedAt: 100 },
+  { id: "india", name: "India", flagEmoji: "🇮🇳", unlockedAt: 150 },
   { id: "italy", name: "Italy", flagEmoji: "🇮🇹", unlockedAt: 200 },
-  { id: "mexico", name: "Mexico", flagEmoji: "🇲🇽", unlockedAt: 200 },
-  { id: "germany", name: "Germany", flagEmoji: "🇩🇪", unlockedAt: 300 },
-  { id: "spain", name: "Spain", flagEmoji: "🇪🇸", unlockedAt: 300 },
-  { id: "kenya", name: "Kenya", flagEmoji: "🇰🇪", unlockedAt: 400 },
-  { id: "argentina", name: "Argentina", flagEmoji: "🇦🇷", unlockedAt: 400 },
-  { id: "china", name: "China", flagEmoji: "🇨🇳", unlockedAt: 500 },
-  { id: "thailand", name: "Thailand", flagEmoji: "🇹🇭", unlockedAt: 500 },
-  { id: "turkey", name: "Turkey", flagEmoji: "🇹🇷", unlockedAt: 600 },
-  { id: "sweden", name: "Sweden", flagEmoji: "🇸🇪", unlockedAt: 600 },
-  { id: "norway", name: "Norway", flagEmoji: "🇳🇴", unlockedAt: 700 },
-  { id: "newzealand", name: "New Zealand", flagEmoji: "🇳🇿", unlockedAt: 700 }
+  { id: "mexico", name: "Mexico", flagEmoji: "🇲🇽", unlockedAt: 260 },
+  { id: "germany", name: "Germany", flagEmoji: "🇩🇪", unlockedAt: 330 }
 ];
 
 function FlagCatcher({ onClose, onEarnStamp }) {
@@ -33,16 +24,15 @@ function FlagCatcher({ onClose, onEarnStamp }) {
   const [combo, setCombo] = useState(0);
   const [fallingFlags, setFallingFlags] = useState([]);
   const [unlockedCountries, setUnlockedCountries] = useState([]);
-  const [nextUnlockAt, setNextUnlockAt] = useState(50);
+  const [nextUnlockAt, setNextUnlockAt] = useState(30);
   const [streakMessage, setStreakMessage] = useState(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationMessage, setCelebrationMessage] = useState('');
   
   const spawnIntervalRef = useRef(null);
   const animationRef = useRef(null);
-  const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 400, height: 500 });
+  const [dimensions, setDimensions] = useState({ width: 380, height: 420 });
   
   // Load high score
   useEffect(() => {
@@ -58,7 +48,7 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     }
   }, [score, highScore]);
   
-  // Update unlocked countries based on score
+  // Update unlocked countries
   useEffect(() => {
     const newUnlocked = countries.filter(c => c.unlockedAt <= score);
     setUnlockedCountries(newUnlocked);
@@ -84,8 +74,8 @@ function FlagCatcher({ onClose, onEarnStamp }) {
       id: Date.now() + Math.random(),
       country: randomCountry,
       x: 40 + Math.random() * (dimensions.width - 80),
-      y: 30,
-      speedY: 80 + Math.floor(score / 150) * 15
+      y: 20,
+      speedY: 70 + Math.floor(score / 100) * 10
     }]);
   }, [gameState, unlockedCountries, dimensions.width, score]);
   
@@ -104,7 +94,7 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     setUnlockedCountries(initialUnlocked);
     
     if (spawnIntervalRef.current) clearInterval(spawnIntervalRef.current);
-    spawnIntervalRef.current = setInterval(() => spawnFlag(), 1000);
+    spawnIntervalRef.current = setInterval(() => spawnFlag(), 1100);
   }, [spawnFlag]);
   
   // End game
@@ -117,7 +107,6 @@ function FlagCatcher({ onClose, onEarnStamp }) {
   const catchFlag = useCallback((country) => {
     if (gameState !== 'playing') return;
     
-    // Find the closest flag of this country (lowest y position)
     const matchingFlags = fallingFlags.filter(f => f.country.id === country.id);
     if (matchingFlags.length === 0) return;
     
@@ -130,12 +119,10 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     setScore(prev => prev + pointsEarned);
     setCombo(prev => prev + 1);
     
-    // Vibrate on mobile
     if (window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(20);
     }
     
-    // Streak bonuses
     if (combo + 1 === 5) {
       setStreakMessage('🔥 5 in a row! +5 bonus! 🔥');
       setTimeout(() => setStreakMessage(null), 1000);
@@ -143,18 +130,14 @@ function FlagCatcher({ onClose, onEarnStamp }) {
       setStreakMessage('⭐ 10 streak! Extra life! ⭐');
       setLives(prev => prev + 1);
       setTimeout(() => setStreakMessage(null), 1500);
-    } else if (combo + 1 === 20) {
-      setStreakMessage('🏆 20 streak! Double points! 🏆');
-      setTimeout(() => setStreakMessage(null), 1500);
     }
     
-    // Earn stamp in main app
     if (onEarnStamp) {
       onEarnStamp(country.id);
     }
   }, [gameState, fallingFlags, combo, onEarnStamp]);
   
-  // Miss a flag (hit bottom)
+  // Miss a flag
   const missFlag = useCallback((flagId) => {
     setFallingFlags(prev => prev.filter(f => f.id !== flagId));
     setLives(prev => {
@@ -181,7 +164,7 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     
     ctx.clearRect(0, 0, dimensions.width, dimensions.height);
     
-    // Background gradient
+    // Background
     const grad = ctx.createLinearGradient(0, 0, 0, dimensions.height);
     grad.addColorStop(0, '#1a4e6e');
     grad.addColorStop(1, '#0d2b4e');
@@ -190,44 +173,39 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     
     // Draw falling flags
     fallingFlags.forEach(flag => {
-      // Draw circular background
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = 'rgba(0,0,0,0.3)';
       ctx.beginPath();
-      ctx.arc(flag.x, flag.y, 28, 0, Math.PI * 2);
+      ctx.arc(flag.x, flag.y, 25, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(255,255,255,0.9)';
       ctx.fill();
-      ctx.shadowBlur = 0;
-      
-      // Draw flag emoji
-      ctx.font = '36px "Segoe UI Emoji"';
+      ctx.font = '32px "Segoe UI Emoji"';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#000';
       ctx.fillText(flag.country.flagEmoji, flag.x, flag.y);
     });
     
-    // Draw bottom danger zone indicator
+    // Bottom danger zone
     ctx.beginPath();
-    ctx.rect(0, dimensions.height - 70, dimensions.width, 70);
-    ctx.fillStyle = 'rgba(255, 59, 48, 0.15)';
+    ctx.rect(0, dimensions.height - 55, dimensions.width, 55);
+    ctx.fillStyle = 'rgba(255, 59, 48, 0.2)';
     ctx.fill();
     
-    ctx.font = '12px "Nunito"';
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '10px "Nunito"';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
     ctx.textAlign = 'center';
-    ctx.fillText('DANGER ZONE', dimensions.width / 2, dimensions.height - 50);
+    ctx.fillText('DANGER ZONE', dimensions.width / 2, dimensions.height - 35);
     
   }, [dimensions, fallingFlags]);
   
-  // Animation loop - update flag positions
+  // Animation loop
   useEffect(() => {
     let lastTime = 0;
     
     const animate = (currentTime) => {
+      requestAnimationFrame(animate);
+      
       if (lastTime === 0) {
         lastTime = currentTime;
-        requestAnimationFrame(animate);
         return;
       }
       
@@ -241,16 +219,14 @@ function FlagCatcher({ onClose, onEarnStamp }) {
             y: flag.y + flag.speedY * deltaTime
           }));
           
-          // Check for flags that hit the bottom (danger zone)
-          const missed = updated.filter(f => f.y >= dimensions.height - 65);
+          const missed = updated.filter(f => f.y >= dimensions.height - 50);
           missed.forEach(f => missFlag(f.id));
           
-          return updated.filter(f => f.y < dimensions.height - 65);
+          return updated.filter(f => f.y < dimensions.height - 50);
         });
       }
       
       drawCanvas();
-      animationRef.current = requestAnimationFrame(animate);
     };
     
     animationRef.current = requestAnimationFrame(animate);
@@ -259,7 +235,7 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     };
   }, [gameState, dimensions.height, missFlag, drawCanvas]);
   
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
       if (spawnIntervalRef.current) clearInterval(spawnIntervalRef.current);
@@ -267,30 +243,16 @@ function FlagCatcher({ onClose, onEarnStamp }) {
     };
   }, []);
   
-  // Update dimensions on resize
+  // Set dimensions
   useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const width = Math.min(450, window.innerWidth - 40);
-        setDimensions({ 
-          width: width, 
-          height: Math.min(550, window.innerHeight - 200)
-        });
-      }
-    };
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    setDimensions({ width: 380, height: 420 });
   }, []);
   
-  const activeButtons = gameState === 'playing' ? unlockedCountries.slice(0, 8) : [];
+  const activeButtons = gameState === 'playing' ? unlockedCountries.slice(0, 6) : [];
   
   return (
-    <div className="flag-catcher-overlay" ref={containerRef}>
+    <div className="flag-catcher-overlay">
       <div className="flag-catcher-container">
-        {/* Exit Button */}
-        <button className="exit-button" onClick={onClose}>✕</button>
-        
         {/* Stats Bar */}
         <div className="stats-bar">
           <div className="score-section">
@@ -310,17 +272,17 @@ function FlagCatcher({ onClose, onEarnStamp }) {
           </div>
         )}
         
-        {/* Streak Message Popup */}
+        {/* Streak Message */}
         {streakMessage && (
           <div className="streak-popup">{streakMessage}</div>
         )}
         
-        {/* Celebration Popup */}
+        {/* Celebration */}
         {showCelebration && celebrationMessage && (
           <div className="celebration-popup">{celebrationMessage}</div>
         )}
         
-        {/* Game Canvas */}
+        {/* Canvas */}
         <canvas
           ref={canvasRef}
           width={dimensions.width}
@@ -328,7 +290,7 @@ function FlagCatcher({ onClose, onEarnStamp }) {
           className="game-canvas"
         />
         
-        {/* Country Buttons (with flags) */}
+        {/* Country Buttons */}
         <div className="button-grid">
           {activeButtons.map(country => (
             <button
@@ -345,9 +307,10 @@ function FlagCatcher({ onClose, onEarnStamp }) {
         {/* Title Overlay */}
         {gameState === 'title' && (
           <div className="overlay">
+            <button className="close-btn-overlay" onClick={onClose}>✕</button>
             <h2>🏆 FLAG CATCHER 🏆</h2>
             <p>Catch the falling flags!</p>
-            <p>Tap the matching country button before they hit the bottom</p>
+            <p>Tap the matching country button</p>
             <div className="features">
               <p>🔥 5 in a row = bonus points</p>
               <p>⭐ 10 in a row = extra life</p>
@@ -360,11 +323,11 @@ function FlagCatcher({ onClose, onEarnStamp }) {
         {/* Game Over Overlay */}
         {gameState === 'gameOver' && (
           <div className="overlay">
+            <button className="close-btn-overlay" onClick={onClose}>✕</button>
             <h2>🎮 GAME OVER 🎮</h2>
-            <p className="final-score">YOUR SCORE: {score}</p>
-            <p className="best-score">BEST SCORE: {highScore}</p>
+            <p className="final-score">{score}</p>
+            <p className="best-score">BEST: {highScore}</p>
             <button className="start-button" onClick={startGame}>PLAY AGAIN</button>
-            <button className="exit-button-overlay" onClick={onClose}>EXIT TO MAP</button>
           </div>
         )}
       </div>
@@ -381,52 +344,26 @@ function FlagCatcher({ onClose, onEarnStamp }) {
           align-items: center;
           justify-content: center;
           z-index: 10000;
-          padding: 10px;
         }
         
         .flag-catcher-container {
           position: relative;
           background: #0d2b4e;
-          border-radius: 28px;
-          padding: 16px;
-          max-width: 500px;
-          width: 100%;
-          max-height: 95vh;
-          overflow-y: auto;
-          box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-        
-        .exit-button {
-          position: absolute;
-          top: 12px;
-          right: 16px;
-          background: rgba(255,255,255,0.15);
-          border: none;
-          color: white;
-          font-size: 18px;
-          cursor: pointer;
-          width: 34px;
-          height: 34px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 20;
-          transition: all 0.2s;
-        }
-        
-        .exit-button:hover {
-          background: rgba(255,255,255,0.3);
+          border-radius: 24px;
+          padding: 12px;
+          width: 420px;
+          max-width: 90vw;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
         
         .stats-bar {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 12px;
-          padding: 10px 15px;
+          margin-bottom: 8px;
+          padding: 6px 12px;
           background: rgba(255,255,255,0.08);
-          border-radius: 20px;
+          border-radius: 16px;
         }
         
         .score-section {
@@ -435,36 +372,35 @@ function FlagCatcher({ onClose, onEarnStamp }) {
         }
         
         .score-label {
-          font-size: 10px;
+          font-size: 8px;
           color: rgba(255,255,255,0.5);
-          letter-spacing: 1px;
         }
         
         .score-value {
-          font-size: 32px;
+          font-size: 24px;
           font-weight: 800;
           color: #ffd966;
           line-height: 1;
         }
         
         .best-label {
-          font-size: 9px;
+          font-size: 8px;
           color: rgba(255,255,255,0.4);
         }
         
         .lives-section {
-          font-size: 20px;
-          letter-spacing: 3px;
+          font-size: 16px;
+          letter-spacing: 2px;
         }
         
         .next-unlock {
           text-align: center;
-          font-size: 11px;
-          color: rgba(255,255,255,0.8);
-          margin-bottom: 10px;
-          padding: 6px;
+          font-size: 10px;
+          color: rgba(255,255,255,0.7);
+          margin-bottom: 6px;
+          padding: 4px;
           background: rgba(255,215,0,0.15);
-          border-radius: 40px;
+          border-radius: 20px;
         }
         
         .streak-popup {
@@ -473,12 +409,12 @@ function FlagCatcher({ onClose, onEarnStamp }) {
           left: 50%;
           transform: translateX(-50%);
           text-align: center;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: bold;
           color: #ffd966;
           background: rgba(0,0,0,0.85);
-          padding: 8px 20px;
-          border-radius: 40px;
+          padding: 6px 16px;
+          border-radius: 30px;
           white-space: nowrap;
           z-index: 25;
           pointer-events: none;
@@ -491,12 +427,12 @@ function FlagCatcher({ onClose, onEarnStamp }) {
           left: 50%;
           transform: translateX(-50%);
           text-align: center;
-          font-size: 18px;
+          font-size: 14px;
           font-weight: bold;
           color: #ff9800;
           background: rgba(0,0,0,0.85);
-          padding: 12px 24px;
-          border-radius: 50px;
+          padding: 8px 20px;
+          border-radius: 40px;
           white-space: nowrap;
           z-index: 25;
           pointer-events: none;
@@ -505,16 +441,15 @@ function FlagCatcher({ onClose, onEarnStamp }) {
         
         @keyframes fadeOut {
           0% { opacity: 1; transform: translateX(-50%) scale(1); }
-          70% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+          70% { opacity: 1; }
           100% { opacity: 0; transform: translateX(-50%) scale(1.1); }
         }
         
         .game-canvas {
           display: block;
           margin: 0 auto;
-          border-radius: 16px;
+          border-radius: 12px;
           background: #0d2b4e;
-          cursor: pointer;
           width: 100%;
           height: auto;
         }
@@ -522,38 +457,38 @@ function FlagCatcher({ onClose, onEarnStamp }) {
         .button-grid {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px;
+          gap: 6px;
           justify-content: center;
-          margin-top: 15px;
-          padding: 8px 0;
+          margin-top: 10px;
+          padding: 4px 0;
         }
         
         .country-button {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 8px 16px;
+          gap: 5px;
+          padding: 5px 10px;
           background: #1e6f5c;
           border: none;
-          border-radius: 60px;
+          border-radius: 50px;
           color: white;
-          font-size: 14px;
+          font-size: 12px;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.05s linear;
+          transition: 0.05s linear;
         }
         
         .country-button:active {
-          transform: scale(0.94);
+          transform: scale(0.93);
           background: #ff9800;
         }
         
         .button-flag {
-          font-size: 18px;
+          font-size: 14px;
         }
         
         .button-name {
-          font-size: 12px;
+          font-size: 10px;
         }
         
         .overlay {
@@ -567,94 +502,75 @@ function FlagCatcher({ onClose, onEarnStamp }) {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          border-radius: 28px;
+          border-radius: 24px;
           text-align: center;
-          padding: 25px;
+          padding: 20px;
           z-index: 30;
         }
         
+        .close-btn-overlay {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: rgba(255,255,255,0.15);
+          border: none;
+          color: white;
+          font-size: 16px;
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
         .overlay h2 {
-          font-size: 26px;
+          font-size: 22px;
           color: #ffd966;
-          margin-bottom: 15px;
+          margin-bottom: 10px;
         }
         
         .overlay p {
           color: white;
-          margin: 6px 0;
-          font-size: 13px;
+          margin: 4px 0;
+          font-size: 12px;
         }
         
         .features {
-          margin: 15px 0;
-          padding: 10px;
+          margin: 10px 0;
+          padding: 8px;
           background: rgba(255,255,255,0.1);
-          border-radius: 20px;
+          border-radius: 16px;
         }
         
         .final-score {
-          font-size: 36px;
+          font-size: 32px;
           font-weight: 800;
           color: #ffd966;
-          margin: 15px 0 5px;
+          margin: 10px 0 5px;
         }
         
         .best-score {
-          font-size: 14px;
+          font-size: 12px;
           color: rgba(255,255,255,0.6);
-          margin-bottom: 25px;
+          margin-bottom: 15px;
         }
         
         .start-button {
           background: #4caf50;
           color: white;
           border: none;
-          padding: 12px 32px;
+          padding: 10px 28px;
           border-radius: 60px;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
-          cursor: pointer;
-          margin: 8px 0;
-          transition: transform 0.1s;
-        }
-        
-        .start-button:active {
-          transform: scale(0.96);
-        }
-        
-        .exit-button-overlay {
-          background: rgba(255,255,255,0.15);
-          color: white;
-          border: none;
-          padding: 8px 24px;
-          border-radius: 60px;
-          font-size: 13px;
           cursor: pointer;
           margin-top: 8px;
         }
         
-        @media (max-width: 480px) {
-          .button-grid {
-            gap: 5px;
-          }
-          .country-button {
-            padding: 5px 10px;
-          }
-          .button-flag {
-            font-size: 14px;
-          }
-          .button-name {
-            font-size: 9px;
-          }
-          .stats-bar {
-            padding: 6px 12px;
-          }
-          .score-value {
-            font-size: 24px;
-          }
-          .lives-section {
-            font-size: 16px;
-          }
+        .start-button:active {
+          transform: scale(0.96);
         }
       `}</style>
     </div>

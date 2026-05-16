@@ -1,6 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+// Add this import at the top
+import SimpleGame from './games/SimpleGame';
 
+// Add this state with your other states
+const [showGame, setShowGame] = useState(false);
+
+// Add this button where you want it (below the header)
+<button 
+  onClick={() => setShowGame(true)}
+  style={{
+    background: '#ff9800',
+    color: 'white',
+    border: 'none',
+    padding: '10px 24px',
+    borderRadius: '60px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    marginBottom: '15px'
+  }}
+>
+  🎮 Play Game
+</button>
+
+// Add this before the closing </div> tag
+{showGame && (
+  <SimpleGame onClose={() => setShowGame(false)} />
+)}
 
 // ============================================
 // COUNTRY DATA (20 countries)

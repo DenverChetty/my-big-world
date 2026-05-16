@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+import FlagCatcher from './games/FlagCatcher';
 
 // ============================================
 // COUNTRY DATA (20 countries)
@@ -55,6 +56,7 @@ function App() {
   const [mathQuestion, setMathQuestion] = useState({ text: "", answer: 0 });
   const [mathAnswer, setMathAnswer] = useState("");
   const [pendingAction, setPendingAction] = useState(null);
+  const [showFlagCatcher, setShowFlagCatcher] = useState(false);
   const celebrationTriggered = useRef(false);
 
   // Preload voices
@@ -345,6 +347,16 @@ function App() {
         <img src="/headerlogo.png" alt="Penny & Peter Panda" className="header-logo" />
       </header>
 
+      {/* Flag Catcher Game Button */}
+      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <button 
+          className="play-game-btn"
+          onClick={() => setShowFlagCatcher(true)}
+        >
+          🎮 Play Flag Catcher
+        </button>
+      </div>
+
       <div className="main-container">
         <section className="map-section">
           <div className="map-container">
@@ -502,6 +514,22 @@ function App() {
         </div>
       )}
 
+      {/* Flag Catcher Game */}
+      {showFlagCatcher && (
+        <FlagCatcher
+          onClose={() => setShowFlagCatcher(false)}
+          onEarnStamp={(countryId) => {
+            if (!stamps.includes(countryId)) {
+              setStamps(prev => [...prev, countryId]);
+            }
+          }}
+          onEarnBadge={(badgeName) => {
+            console.log('Earned badge:', badgeName);
+          }}
+          currentStamps={stamps}
+        />
+      )}
+
       <style jsx>{`
         /* INTRO SCREEN STYLES */
         .intro-overlay {
@@ -523,8 +551,25 @@ function App() {
         .loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #0d2b4e; color: white; }
         .loading-spinner { font-size: 4rem; animation: bounce 1s infinite; }
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .header { text-align: center; padding: 1rem; background: #1e6f5c; border-radius: 32px; margin-bottom: 2rem; }
+        .header { text-align: center; padding: 1rem; background: #1e6f5c; border-radius: 32px; margin-bottom: 1rem; }
         .header-logo { width: 220px; max-width: 90%; height: auto; object-fit: contain; }
+        
+        .play-game-btn {
+          background: #ff9800;
+          color: white;
+          border: none;
+          padding: 10px 24px;
+          border-radius: 60px;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: transform 0.1s;
+        }
+        
+        .play-game-btn:active {
+          transform: scale(0.95);
+        }
+        
         .main-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
         .map-section { flex: 1.5; min-width: 0; }
         .right-panel { flex: 0.8; min-width: 280px; max-width: 380px; display: flex; flex-direction: column; gap: 1.5rem; }
